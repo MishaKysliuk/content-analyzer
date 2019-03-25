@@ -1,0 +1,18 @@
+.row {
+
+}
+
+.header-row{
+  margin: 50px auto 0 auto;
+  display: flex;
+  justify-content: space-between;
+  flex: 0 0 40%;
+}
+
+.url-input {
+  flex: 0 0 70%;
+}
+
+.btn-go {
+  flex: 0 0 20%;
+}
