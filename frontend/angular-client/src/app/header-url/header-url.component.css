@@ -1,9 +1,6 @@
-.row {
-
-}
 
 .header-row{
-  margin: 50px auto 0 auto;
+  margin: 0 auto;
   display: flex;
   justify-content: space-between;
   flex: 0 0 40%;
