@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import {UrlService} from '../url.service';
 
 @Component({
   selector: 'app-header-url',
@@ -7,9 +8,15 @@ import { Component, OnInit } from '@angular/core';
 })
 export class HeaderUrlComponent implements OnInit {
 
-  constructor() { }
+  private url: string;
+
+  constructor(private urlService: UrlService) { }
 
   ngOnInit() {
   }
 
+
+  processUrl() {
+    this.urlService.urlToRetrieveContent.next(this.url);
+  }
 }

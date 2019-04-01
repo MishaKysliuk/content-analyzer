@@ -1,8 +1,8 @@
 <div class="container">
   <div class="row">
     <div class="header-row">
-      <input type="text" class="form-control url-input" placeholder="URL" aria-label="URL">
-      <button type="button" class="btn btn-primary btn-go">Go</button>
+      <input type="text" class="form-control url-input" [(ngModel)]="url" placeholder="URL" aria-label="URL">
+      <button type="button" class="btn btn-primary btn-go" (click)="processUrl()">Go</button>
     </div>
   </div>
 </div>

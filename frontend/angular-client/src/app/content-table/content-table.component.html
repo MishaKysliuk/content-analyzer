@@ -1,29 +1,30 @@
 <div class="container">
-  <div class="row">
-    <table class="table">
-      <thead class="thead-dark">
-      <tr>
-        <th style="width: 15%">Inside Tag</th>
-        <th style="width: 75%">Content</th>
-        <th style="width: 10%"><button (click)="addContentUnit(i)">Add</button></th>
-      </tr>
-      </thead>
-      <tbody>
-      <tr *ngFor="let contentUnit of content; let i = index;">
-        <td>
-          <input type="text" [(ngModel)]="contentUnit.insideTag" [disabled]="!contentUnit.isEditable">
-        </td>
-        <td>
-          <textarea type="text" style="width: 100%" [(ngModel)]="contentUnit.text" [disabled]="!contentUnit.isEditable"></textarea>
-        </td>
-        <td>
-          <div>
-            <button (click)="editContentUnit(i)">Edit</button>
-            <button (click)="deleteContentUnit(i)">Remove</button>
-          </div>
-        </td>
-      </tr>
-      </tbody>
-    </table>
+  <div class="row" *ngFor="let contentUnit of content; let i = index;">
+          <!--<div>-->
+            <!--<button (click)="editContentUnit(i)">Edit</button>-->
+            <!--<button (click)="deleteContentUnit(i)">Remove</button>-->
+          <!--</div>-->
+        <!--</td>-->
+      <!--</tr>-->
+      <!--</tbody>-->
+    <!--</table>-->
+    <div class="card">
+      <div class="card-header">
+        <h3 *ngIf="!contentUnit.isEditable">{{ contentUnit.insideTag }}</h3>
+        <input *ngIf="contentUnit.isEditable" type="text" [(ngModel)]="contentUnit.insideTag">
+        <div class="edit-buttons">
+          <button (click)="editContentUnit(i)"><i class="icon-pencil"></i></button>
+          <button (click)="deleteContentUnit(i)"><i class="icon-cancel"></i></button>
+        </div>
+      </div>
+      <div class="card-body">
+        <p class="card-text" *ngIf="!contentUnit.isEditable">{{ contentUnit.text }}</p>
+        <textarea *ngIf="contentUnit.isEditable" type="text" style="width: 100%"
+                  [(ngModel)]="contentUnit.text"></textarea>
+      </div>
+    </div>
+  </div>
+  <div class="row align-right">
+    <button class="add-button" (click)="addContentUnit()"><i class="icon-plus-circled"></i></button>
   </div>
 </div>

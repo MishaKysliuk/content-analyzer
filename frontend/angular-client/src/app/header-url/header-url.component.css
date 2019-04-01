@@ -1,15 +1,15 @@
 
 .header-row{
-  margin: 0 auto;
+  margin: 30px auto;
   display: flex;
   justify-content: space-between;
-  flex: 0 0 40%;
+  flex: 0 0 60%;
 }
 
 .url-input {
-  flex: 0 0 70%;
+  flex: 0 0 85%;
 }
 
 .btn-go {
-  flex: 0 0 20%;
+  flex: 0 0 10%;
 }

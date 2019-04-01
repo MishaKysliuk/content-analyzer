@@ -6,6 +6,7 @@ import { RouterModule } from '@angular/router';
 import { AppComponent } from './app.component';
 import { HeaderUrlComponent } from './header-url/header-url.component';
 import { ContentTableComponent } from './content-table/content-table.component';
+import {UrlService} from './url.service';
 
 @NgModule({
   declarations: [
@@ -18,7 +19,7 @@ import { ContentTableComponent } from './content-table/content-table.component';
     FormsModule,
     RouterModule
   ],
-  providers: [],
+  providers: [ UrlService ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

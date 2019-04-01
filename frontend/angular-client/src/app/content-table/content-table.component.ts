@@ -1,14 +1,13 @@
-import {Component, OnInit} from '@angular/core';
-import { NgForm } from '@angular/forms';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import {ContentUnit} from './contentUnit';
-import { Router } from '@angular/router';
+import {UrlService} from '../url.service';
 
 @Component({
   selector: 'app-content-table',
   templateUrl: './content-table.component.html',
   styleUrls: ['./content-table.component.css']
 })
-export class ContentTableComponent implements OnInit {
+export class ContentTableComponent implements OnInit, OnDestroy {
 
   content: ContentUnit[] = [
     {
@@ -30,10 +29,21 @@ export class ContentTableComponent implements OnInit {
     }
   ];
 
-  constructor() {
+  constructor(private urlService: UrlService) {
   }
 
   ngOnInit() {
+    this.urlService.urlToRetrieveContent.subscribe( (url: string) => {
+      this.retrieveContentFromUrl(url);
+    });
+  }
+
+  ngOnDestroy() {
+    this.urlService.urlToRetrieveContent.unsubscribe();
+  }
+
+  retrieveContentFromUrl(url: string) {
+    console.log('stub ' + url);
   }
 
   addContentUnit() {

@@ -9,3 +9,24 @@
 .glyphicon-plus {
   color: green;
 }
+
+.card {
+  width: 100%;
+}
+
+.card-header {
+  display: flex;
+  justify-content: space-between;
+}
+
+.row {
+  margin-top: 5px;
+}
+
+.align-right {
+  display: flex;
+  justify-content: flex-end;
+}
+.add-button {
+  align-self: flex-end;
+}
