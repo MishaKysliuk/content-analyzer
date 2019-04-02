@@ -1,6 +1,7 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
 import {ContentUnit} from './contentUnit';
 import {UrlService} from '../url.service';
+import {HttpClient} from '@angular/common/http';
 
 @Component({
   selector: 'app-content-table',
@@ -9,7 +10,7 @@ import {UrlService} from '../url.service';
 })
 export class ContentTableComponent implements OnInit, OnDestroy {
 
-  content: ContentUnit[] = [
+  public content: ContentUnit[] = [
     {
       insideTag: 'h1',
       text: window.location.href,
@@ -29,7 +30,7 @@ export class ContentTableComponent implements OnInit, OnDestroy {
     }
   ];
 
-  constructor(private urlService: UrlService) {
+  constructor(private urlService: UrlService, private http: HttpClient) {
   }
 
   ngOnInit() {
@@ -43,6 +44,21 @@ export class ContentTableComponent implements OnInit, OnDestroy {
   }
 
   retrieveContentFromUrl(url: string) {
+    const urlToSend = window.location;
+    console.log('url ' + urlToSend);
+    this.http.post(urlToSend + '/api/retrieve_content', {
+      urlToParse: url
+    })
+      .subscribe(
+        res => {
+          res.forEach(contentUnit => {
+
+          })
+        },
+        err => {
+          alert(err);
+        }
+      );
     console.log('stub ' + url);
   }
 

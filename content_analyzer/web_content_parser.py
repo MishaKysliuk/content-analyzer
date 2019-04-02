@@ -59,11 +59,3 @@ class WebPageParser:
         if response.status_code != 200:
             raise Exception('Could not retrieve "%s" page html. Status code is %s' % (self.url, response.status_code))
         return response.text
-
-
-
-parser = WebPageParser('https://www.barkymate.com/')
-for text in parser.parse_web_page_text():
-    print (text)
-
-

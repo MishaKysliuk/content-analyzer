@@ -8,7 +8,7 @@ import {UrlService} from '../url.service';
 })
 export class HeaderUrlComponent implements OnInit {
 
-  private url: string;
+  public url: string;
 
   constructor(private urlService: UrlService) { }
 
