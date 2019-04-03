@@ -1,4 +1,3 @@
-import json
 from django.shortcuts import render
 from django.http import JsonResponse
 
@@ -11,6 +10,9 @@ def index(request):
 
 def retrieve_content(request):
     # parser = WebPageParser('https://www.barkymate.com/')
-    parser = WebPageParser(request.GET.get('parse'))
-    data = parser.parse_web_page_text()
+    try:
+        parser = WebPageParser(request.GET.get('parse'))
+        data = parser.parse_web_page_text()
+    except Exception as e:
+        return JsonResponse({'message': str(e)}, status=500)
     return JsonResponse([text.__dict__ for text in data], safe=False)

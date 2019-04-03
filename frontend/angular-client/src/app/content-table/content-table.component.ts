@@ -3,21 +3,24 @@ import {ContentUnit} from './contentUnit';
 import {UrlService} from '../url.service';
 import {HttpClient} from '@angular/common/http';
 import {ServerResponseUnit} from './serverResponseUnit';
+import {GlobalErrorHandler} from "../global-error-handler";
+import {throwError} from "rxjs";
 
 @Component({
   selector: 'app-content-table',
   templateUrl: './content-table.component.html',
-  styleUrls: ['./content-table.component.css']
+  styleUrls: ['./content-table.component.css'],
+  providers: [GlobalErrorHandler]
 })
 export class ContentTableComponent implements OnInit, OnDestroy {
 
   public content: ContentUnit[] = [];
 
-  constructor(private urlService: UrlService, private http: HttpClient) {
+  constructor(private urlService: UrlService, private http: HttpClient, private errorHandler: GlobalErrorHandler) {
   }
 
   ngOnInit() {
-    this.urlService.urlToRetrieveContent.subscribe( (url: string) => {
+    this.urlService.urlToRetrieveContent.subscribe((url: string) => {
       this.retrieveContentFromUrl(url);
     });
   }
@@ -28,17 +31,18 @@ export class ContentTableComponent implements OnInit, OnDestroy {
 
   retrieveContentFromUrl(url: string) {
     this.content = [];
-    this.http.get<ServerResponseUnit[]>('/api/retrieve_content?parse=' + url)
+    if (!url) {
+      this.errorHandler.handleError({message: 'URL must not be empty!'});
+    } else {
+      this.http.get<ServerResponseUnit[]>('/api/retrieve_content?parse=' + url)
       .subscribe(
         res => {
           res.forEach(unit => {
             this.content.push(new ContentUnit(unit.tag, unit.text, false));
-          })
-        },
-        err => {
-          alert(err.json());
+          });
         }
       );
+    }
   }
 
   addContentUnit() {
