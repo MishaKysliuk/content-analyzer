@@ -2,6 +2,7 @@ import {Component, OnDestroy, OnInit} from '@angular/core';
 import {ContentUnit} from './contentUnit';
 import {UrlService} from '../url.service';
 import {HttpClient} from '@angular/common/http';
+import {ServerResponseUnit} from './serverResponseUnit';
 
 @Component({
   selector: 'app-content-table',
@@ -10,25 +11,7 @@ import {HttpClient} from '@angular/common/http';
 })
 export class ContentTableComponent implements OnInit, OnDestroy {
 
-  public content: ContentUnit[] = [
-    {
-      insideTag: 'h1',
-      text: window.location.href,
-      isEditable: false
-    },
-    {
-      insideTag: 'h1',
-      text: 'Zalypa asnfdjasflansdfkljalsdnjklajsd askdj p;kasjd;kasjd;kjas d;kjasd;k ja;ksdj ;kajsd ;kjasd as' +
-        'kdjajsd;kasjd; ja;ksdj;kasjd;kajsd;k jas;kdja;ksjd ;kasjd ;kjasd ;kja dj;as j',
-      isEditable: false
-    },
-    {
-      insideTag: 'h1',
-      text: 'Zalypa asnfdjasflansdfkljalsdnjklajsd askdj p;kasjd;kasjd;kjas d;kjasd;k ja;ksdj ;kajsd ;kjasd as' +
-        'kdjajsd;kasjd; ja;ksdj;kasjd;kajsd;k jas;kdja;ksjd ;kasjd ;kjasd ;kja dj;as j',
-      isEditable: false
-    }
-  ];
+  public content: ContentUnit[] = [];
 
   constructor(private urlService: UrlService, private http: HttpClient) {
   }
@@ -44,30 +27,22 @@ export class ContentTableComponent implements OnInit, OnDestroy {
   }
 
   retrieveContentFromUrl(url: string) {
-    const urlToSend = window.location;
-    console.log('url ' + urlToSend);
-    this.http.post(urlToSend + '/api/retrieve_content', {
-      urlToParse: url
-    })
+    this.content = [];
+    this.http.get<ServerResponseUnit[]>('/api/retrieve_content?parse=' + url)
       .subscribe(
         res => {
-          res.forEach(contentUnit => {
-
+          res.forEach(unit => {
+            this.content.push(new ContentUnit(unit.tag, unit.text, false));
           })
         },
         err => {
-          alert(err);
+          alert(err.json());
         }
       );
-    console.log('stub ' + url);
   }
 
   addContentUnit() {
-    this.content.push({
-      insideTag: '',
-      text: '',
-      isEditable: true
-    });
+    this.content.push(new ContentUnit('', '', true));
   }
 
   deleteContentUnit(index) {

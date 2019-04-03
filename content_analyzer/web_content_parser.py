@@ -1,12 +1,6 @@
-from imp import reload
-
 import requests
 import re
-from bs4 import BeautifulSoup, Tag, Comment, NavigableString
-import sys
-
-reload(sys)
-sys.setdefaultencoding('utf-8')
+from bs4 import BeautifulSoup, Tag, NavigableString
 
 
 class TextData:
@@ -23,7 +17,7 @@ class WebPageParser:
     #Sites do not allow to retrieve html content without this header
     user_agent_header = {'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/72.0.3626.121 Safari/537.36'}
 
-    skipped_tags = ['script', 'noscript', 'iframe', 'ym-measure', 'header', 'nav', 'footer']
+    skipped_tags = ['script', 'style', 'noscript', 'iframe', 'ym-measure', 'header', 'nav', 'footer']
 
     def __init__(self, url):
         self.url = url

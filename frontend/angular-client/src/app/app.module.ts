@@ -2,7 +2,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClientModule, HttpClientXsrfModule } from '@angular/common/http';
 
 import { AppComponent } from './app.component';
 import { HeaderUrlComponent } from './header-url/header-url.component';
@@ -19,7 +19,11 @@ import { UrlService } from './url.service';
     BrowserModule,
     FormsModule,
     RouterModule,
-    HttpClientModule
+    HttpClientModule,
+    HttpClientXsrfModule.withOptions({
+      cookieName: 'csrftoken',
+      headerName: 'X-CSRFToken',
+    })
   ],
   providers: [ UrlService ],
   bootstrap: [AppComponent]
