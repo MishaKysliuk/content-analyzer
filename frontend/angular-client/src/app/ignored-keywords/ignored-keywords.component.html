@@ -1,0 +1,19 @@
+<div class="container">
+  <div class="card">
+    <div class="card-header" id="ignoredKeywordsHeading">
+      <h5 class="mb-0">
+        Select Ignored Keywords
+      </h5>
+      <button class="btn" data-toggle="collapse" data-target="#collapseIgnoredKeywords" aria-expanded="true"
+              aria-controls="collapseIgnoredKeywords">
+        <i class="icon-plus-circled"></i>
+      </button>
+    </div>
+
+    <div id="collapseIgnoredKeywords" class="collapse show" aria-labelledby="ignoredKeywordsHeading">
+      <div cdkDropList (cdkDropListDropped)='drop($event)'>
+        <div *ngFor='let artist of keywords' class='pop' cdkDrag>{{artist.keyword}}</div>
+      </div>
+    </div>
+  </div>
+</div>

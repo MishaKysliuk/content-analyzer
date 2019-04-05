@@ -3,8 +3,7 @@ import {ContentUnit} from './contentUnit';
 import {UrlService} from '../url.service';
 import {HttpClient} from '@angular/common/http';
 import {ServerResponseUnit} from './serverResponseUnit';
-import {GlobalErrorHandler} from "../global-error-handler";
-import {throwError} from "rxjs";
+import {GlobalErrorHandler} from '../global-error-handler';
 
 @Component({
   selector: 'app-content-table',

@@ -9,7 +9,6 @@ export class GlobalErrorHandler extends ErrorHandler {
   }
 
   handleError(error) {
-    console.log('inside');
     this.toastrService.error(error.message, 'Error', { onActivateTick: true });
   }
 

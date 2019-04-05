@@ -12,12 +12,16 @@ import {HttpErrorInterceptor} from './http-error.interceptor';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {ToastrModule} from 'ngx-toastr';
 import {GlobalErrorHandler} from './global-error-handler';
+import {HTTPListener, HTTPStatus} from './http-status.interceptor';
+import { IgnoredKeywordsComponent } from './ignored-keywords/ignored-keywords.component';
+import {DragDropModule} from '@angular/cdk/drag-drop';
 
 @NgModule({
   declarations: [
     AppComponent,
     HeaderUrlComponent,
-    ContentTableComponent
+    ContentTableComponent,
+    IgnoredKeywordsComponent
   ],
   imports: [
     BrowserModule,
@@ -29,14 +33,21 @@ import {GlobalErrorHandler} from './global-error-handler';
       headerName: 'X-CSRFToken',
     }),
     BrowserAnimationsModule,
-    ToastrModule.forRoot()
+    ToastrModule.forRoot(),
+    DragDropModule
   ],
   providers: [
     UrlService,
+    HTTPStatus,
     {
       provide: HTTP_INTERCEPTORS,
       useClass: HttpErrorInterceptor,
       multi: true,
+    },
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: HTTPListener,
+      multi: true
     },
     {
       provide: ErrorHandler,

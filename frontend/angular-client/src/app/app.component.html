@@ -1,2 +1,11 @@
 <app-header-url></app-header-url>
 <app-content-table></app-content-table>
+<app-ignored-keywords></app-ignored-keywords>
+
+<div *ngIf="HTTPActivity" class="loader-container">
+	<div class="top-left"></div>
+	<div class="top-right"></div>
+	<div class="bottom-left"></div>
+	<div class="bottom-right"></div>
+</div>
+<div *ngIf="HTTPActivity" class="modal-backdrop"></div>
