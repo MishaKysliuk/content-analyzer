@@ -1,6 +1,7 @@
-import {Component, OnInit} from '@angular/core';
-import {KeywordUnit} from './keywordUnit';
-import {CdkDragDrop, moveItemInArray} from '@angular/cdk/drag-drop';
+import {Component, OnInit, ViewChild} from '@angular/core';
+import {KeywordUnit} from './keywords-table/keywordUnit';
+import {SelectionModel} from '@angular/cdk/collections';
+import {KeywordsTableComponent} from './keywords-table/keywords-table.component';
 
 @Component({
   selector: 'app-ignored-keywords',
@@ -11,20 +12,51 @@ import {CdkDragDrop, moveItemInArray} from '@angular/cdk/drag-drop';
 
 export class IgnoredKeywordsComponent implements OnInit {
 
-  public keywords: KeywordUnit[] = [];
-
+  @ViewChild('targetKeywordsComponent') targetKeywordsComponent: KeywordsTableComponent;
+  @ViewChild('ignoredKeywordsComponent') ignoredKeywordsComponent: KeywordsTableComponent;
 
   constructor() {
   }
 
   ngOnInit() {
-    this.keywords.push(new KeywordUnit('Casino', 100));
-    this.keywords.push(new KeywordUnit('Casino games', 1000));
-    this.keywords.push(new KeywordUnit('Casino online', 110));
+
+    setTimeout(() => {
+      this.targetKeywordsComponent.keywordsData.push(new KeywordUnit('casino', 3, 22));
+      this.targetKeywordsComponent.keywordsData.push(new KeywordUnit('casino games', 5, 222));
+      this.targetKeywordsComponent.keywordsData.push(new KeywordUnit('casino online', 6, 111));
+      this.targetKeywordsComponent.keywordsData.push(new KeywordUnit('casino online paypal', 12, 112));
+      this.targetKeywordsComponent.keywordsData.push(new KeywordUnit('casino online skrill', 7, 111231));
+      this.targetKeywordsComponent.keywordsData.push(new KeywordUnit('roulete skrill', 7, 111231));
+      this.targetKeywordsComponent.keywordsData.push(new KeywordUnit('play online skrill', 7, 111231));
+      this.refreshDataSources();
+    }, 2000);
   }
 
-  drop(event: CdkDragDrop<string[]>) {
-    moveItemInArray(this.keywords, event.previousIndex, event.currentIndex);
+  moveElements(from: KeywordUnit[], to: KeywordUnit[], selection: SelectionModel<KeywordUnit>) {
+    const elements = selection.selected;
+    elements.forEach(element => {
+      const index: number = from.findIndex(unit => unit.keyword === element.keyword);
+      from.splice(index, 1);
+      to.push(element);
+      selection.toggle(element);
+    });
+  }
+
+  moveToIgnored() {
+    this.moveElements(this.targetKeywordsComponent.keywordsData,
+      this.ignoredKeywordsComponent.keywordsData, this.targetKeywordsComponent.selection);
+    this.refreshDataSources();
+  }
+
+  moveToTarget() {
+    this.moveElements(this.ignoredKeywordsComponent.keywordsData,
+      this.targetKeywordsComponent.keywordsData, this.ignoredKeywordsComponent.selection);
+    this.refreshDataSources();
+  }
+
+  private refreshDataSources() {
+    this.targetKeywordsComponent.refreshDataSource();
+    this.ignoredKeywordsComponent.refreshDataSource();
   }
 
 }

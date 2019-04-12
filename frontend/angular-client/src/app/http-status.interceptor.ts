@@ -54,9 +54,6 @@ export class HTTPListener implements HttpInterceptor {
       map(event => {
         return event;
       }),
-      catchError(error => {
-        return throwError(error);
-      }),
       finalize(() => {
         this.status.removeRunningRequest();
         if (!this.status.isRequestPending()) {

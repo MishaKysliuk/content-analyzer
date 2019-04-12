@@ -11,8 +11,13 @@
     </div>
 
     <div id="collapseIgnoredKeywords" class="collapse show" aria-labelledby="ignoredKeywordsHeading">
-      <div cdkDropList (cdkDropListDropped)='drop($event)'>
-        <div *ngFor='let artist of keywords' class='pop' cdkDrag>{{artist.keyword}}</div>
+      <div class="keywords-container">
+        <app-keywords-table #targetKeywordsComponent ngClass="table-container"></app-keywords-table>
+        <div class="buttons-container">
+          <button class="add-button" (click)="moveToIgnored()"><i class="icon-right"></i></button>
+          <button class="add-button" (click)="moveToTarget()"><i class="icon-left"></i></button>
+        </div>
+        <app-keywords-table #ignoredKeywordsComponent ngClass="table-container"></app-keywords-table>
       </div>
     </div>
   </div>

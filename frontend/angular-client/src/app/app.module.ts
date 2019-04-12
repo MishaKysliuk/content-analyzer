@@ -13,15 +13,23 @@ import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {ToastrModule} from 'ngx-toastr';
 import {GlobalErrorHandler} from './global-error-handler';
 import {HTTPListener, HTTPStatus} from './http-status.interceptor';
-import { IgnoredKeywordsComponent } from './ignored-keywords/ignored-keywords.component';
-import {DragDropModule} from '@angular/cdk/drag-drop';
+import {IgnoredKeywordsComponent} from './ignored-keywords/ignored-keywords.component';
+import {
+  MatInputModule,
+  MatPaginatorModule,
+  MatProgressSpinnerModule,
+  MatSortModule,
+  MatTableModule
+} from '@angular/material';
+import { KeywordsTableComponent } from './ignored-keywords/keywords-table/keywords-table.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     HeaderUrlComponent,
     ContentTableComponent,
-    IgnoredKeywordsComponent
+    IgnoredKeywordsComponent,
+    KeywordsTableComponent
   ],
   imports: [
     BrowserModule,
@@ -34,7 +42,11 @@ import {DragDropModule} from '@angular/cdk/drag-drop';
     }),
     BrowserAnimationsModule,
     ToastrModule.forRoot(),
-    DragDropModule
+    MatInputModule,
+    MatTableModule,
+    MatPaginatorModule,
+    MatSortModule,
+    MatProgressSpinnerModule
   ],
   providers: [
     UrlService,
