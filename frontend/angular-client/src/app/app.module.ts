@@ -22,6 +22,7 @@ import {
   MatTableModule
 } from '@angular/material';
 import { KeywordsTableComponent } from './ignored-keywords/keywords-table/keywords-table.component';
+import { GwtTableComponent } from './gwt-table/gwt-table.component';
 
 @NgModule({
   declarations: [
@@ -29,7 +30,8 @@ import { KeywordsTableComponent } from './ignored-keywords/keywords-table/keywor
     HeaderUrlComponent,
     ContentTableComponent,
     IgnoredKeywordsComponent,
-    KeywordsTableComponent
+    KeywordsTableComponent,
+    GwtTableComponent
   ],
   imports: [
     BrowserModule,

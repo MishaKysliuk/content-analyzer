@@ -1,0 +1,48 @@
+<div class="container">
+  <div class="card">
+    <div class="card-header" id="ignoredKeywordsHeading">
+      <h5 class="mb-0">
+        Select Ignored Keywords
+      </h5>
+      <button class="btn" data-toggle="collapse" data-target="#collapseIgnoredKeywords" aria-expanded="true"
+              aria-controls="collapseIgnoredKeywords">
+        <i class="icon-plus-circled"></i>
+      </button>
+    </div>
+
+    <div id="collapseIgnoredKeywords" class="collapse show" aria-labelledby="ignoredKeywordsHeading">
+      <div class="keywords-container">
+        <div class="main-container">
+          <mat-form-field class="filter-container">
+            <input matInput (keyup)="applyFilter($event.target.value)" placeholder="Filter">
+          </mat-form-field>
+
+          <div class="table-container">
+            <table mat-table [dataSource]="dataSource" matSort class="mat-elevation-z8">
+
+              <ng-container matColumnDef="keyword">
+                <th mat-header-cell [ngClass]="'keyword-column'" *matHeaderCellDef mat-sort-header>Keyword</th>
+                <td mat-cell *matCellDef="let element">{{element.keyword}}</td>
+              </ng-container>
+
+              <ng-container matColumnDef="position">
+                <th mat-header-cell [ngClass]="'position-column'" *matHeaderCellDef mat-sort-header>Position</th>
+                <td mat-cell *matCellDef="let element">{{element.position}}</td>
+              </ng-container>
+
+              <ng-container matColumnDef="clicks">
+                <th mat-header-cell [ngClass]="'clicks-column'" *matHeaderCellDef mat-sort-header>Clicks</th>
+                <td mat-cell *matCellDef="let element">{{element.clicks}}</td>
+              </ng-container>
+
+              <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
+              <tr mat-row *matRowDef="let row; let i = index; columns: displayedColumns;"
+                  [ngClass]="{'selected': selection.isSelected(row)}" (click)="clickHandler($event, row, i)"></tr>
+            </table>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
