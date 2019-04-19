@@ -1,5 +1,5 @@
 import {Component, OnInit, ViewChild} from '@angular/core';
-import {KeywordUnit} from './keywords-table/keywordUnit';
+import {KeywordUnit} from '../gwt-table/keywordUnit';
 import {SelectionModel} from '@angular/cdk/collections';
 import {KeywordsTableComponent} from './keywords-table/keywords-table.component';
 

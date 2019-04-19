@@ -1,5 +1,5 @@
 import {Component, OnInit, ViewChild} from '@angular/core';
-import {KeywordUnit} from './keywordUnit';
+import {KeywordUnit} from '../../gwt-table/keywordUnit';
 import {MatSort, MatTableDataSource} from '@angular/material';
 import {SelectionModel} from '@angular/cdk/collections';
 
