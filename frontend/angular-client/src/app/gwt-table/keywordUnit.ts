@@ -7,9 +7,9 @@ export class KeywordUnit {
   clicks: number;
   impressions: number;
   inText: number;
-  where: string[];
+  where: string;
 
-  constructor(keyword: string, position: number, clicks: number, impressions: number, inText: number, where: string[]) {
+  constructor(keyword: string, position: number, clicks: number, impressions: number, inText: number, where: string) {
     this.keyword = keyword;
     this.position = position;
     this.clicks = clicks;

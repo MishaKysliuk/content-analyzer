@@ -21,13 +21,6 @@ export class IgnoredKeywordsComponent implements OnInit {
   ngOnInit() {
 
     setTimeout(() => {
-      this.targetKeywordsComponent.keywordsData.push(new KeywordUnit('casino', 3, 22));
-      this.targetKeywordsComponent.keywordsData.push(new KeywordUnit('casino games', 5, 222));
-      this.targetKeywordsComponent.keywordsData.push(new KeywordUnit('casino online', 6, 111));
-      this.targetKeywordsComponent.keywordsData.push(new KeywordUnit('casino online paypal', 12, 112));
-      this.targetKeywordsComponent.keywordsData.push(new KeywordUnit('casino online skrill', 7, 111231));
-      this.targetKeywordsComponent.keywordsData.push(new KeywordUnit('roulete skrill', 7, 111231));
-      this.targetKeywordsComponent.keywordsData.push(new KeywordUnit('play online skrill', 7, 111231));
       this.refreshDataSources();
     }, 2000);
   }

@@ -17,9 +17,13 @@ import {IgnoredKeywordsComponent} from './ignored-keywords/ignored-keywords.comp
 import {
   MatInputModule,
   MatPaginatorModule,
-  MatProgressSpinnerModule, MatSlideToggle,
+  MatProgressSpinnerModule,
   MatSortModule,
-  MatTableModule
+  MatTableModule,
+  MatSelectModule,
+  MatDatepickerModule,
+  MatSlideToggleModule,
+  MatNativeDateModule
 } from '@angular/material';
 import { KeywordsTableComponent } from './ignored-keywords/keywords-table/keywords-table.component';
 import { GwtTableComponent } from './gwt-table/gwt-table.component';
@@ -49,7 +53,10 @@ import { GwtTableComponent } from './gwt-table/gwt-table.component';
     MatPaginatorModule,
     MatSortModule,
     MatProgressSpinnerModule,
-    MatSlideToggle
+    MatSelectModule,
+    MatDatepickerModule,
+    MatSlideToggleModule,
+    MatNativeDateModule
   ],
   providers: [
     UrlService,
