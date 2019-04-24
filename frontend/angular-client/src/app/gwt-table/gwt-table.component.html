@@ -13,31 +13,48 @@
     <div id="collapseIgnoredKeywords" class="collapse show" aria-labelledby="ignoredKeywordsHeading">
       <div class="main-container">
 
-        <div class="filter-container">
-          <mat-form-field>
-            <mat-label>Panel color</mat-label>
-            <mat-select panelClass="select-panel">
+        <div class="request-filter-container">
+          <mat-form-field class="country-select">
+            <mat-label>Country</mat-label>
+            <mat-select [(value)]="selectedCountry" panelClass="select-panel">
               <mat-option *ngFor="let country of countries" [value]="country.value">{{country.label}}</mat-option>
             </mat-select>
           </mat-form-field>
-          <mat-form-field>
-            <mat-label>Panel color</mat-label>
-            <mat-select panelClass="select-panel">
+          <mat-form-field class="device-select">
+            <mat-label>Device</mat-label>
+            <mat-select [(value)]="selectedDevice" panelClass="select-panel">
               <mat-option *ngFor="let device of devices" [value]="device.value">{{device.label}}</mat-option>
             </mat-select>
           </mat-form-field>
 
-          <div class="date-picker">
-            <mat-form-field>
-              <input matInput (keydown)="$event.preventDefault();" [matDatepicker]="picker" (focus)="picker.open()" placeholder="From">
-              <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
-              <mat-datepicker #picker [disabled]="false"></mat-datepicker>
+          <div class="date-picker-area">
+            <mat-form-field class="date-picker">
+              <input matInput (keydown)="$event.preventDefault();" [matDatepicker]="pickerFrom" [(ngModel)]="dateFrom"
+                     (focus)="pickerFrom.open()" placeholder="From">
+              <mat-datepicker-toggle matSuffix [for]="pickerFrom"></mat-datepicker-toggle>
+              <mat-datepicker #pickerFrom [disabled]="false"></mat-datepicker>
             </mat-form-field>
-
+            <span class="date-dash">&mdash;</span>
+            <mat-form-field class="date-picker">
+              <input matInput (keydown)="$event.preventDefault();" [matDatepicker]="pickerTo" [(ngModel)]="dateTo"
+                     (focus)="pickerTo.open()" placeholder="To">
+              <mat-datepicker-toggle matSuffix [for]="pickerTo"></mat-datepicker-toggle>
+              <mat-datepicker #pickerTo [disabled]="false"></mat-datepicker>
+            </mat-form-field>
           </div>
 
-          <mat-form-field>
-            <input matInput (keyup)="applyFilter($event.target.value)" placeholder="Filter">
+          <button mat-raised-button color="primary" class="fetch-button" (click)="fetchData()">Fetch</button>
+        </div>
+        <div class="live-filter-container">
+          <mat-form-field class="device-select">
+            <mat-label>Show</mat-label>
+            <mat-select panelClass="select-panel">
+              <mat-option *ngFor="let showType of showTypes" [value]="showType.value">{{showType.label}}</mat-option>
+            </mat-select>
+          </mat-form-field>
+
+          <mat-form-field class="keyword-filter">
+            <input matInput (keyup)="applyFilter($event.target.value)" placeholder="Keyword Filter">
           </mat-form-field>
         </div>
 

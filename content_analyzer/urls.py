@@ -21,5 +21,6 @@ from content_analyzer import views
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/retrieve_content', views.retrieve_content),
+    path('api/retrieve_gwt', views.retrieve_gwt),
     path('', include('frontend.urls')),
 ]

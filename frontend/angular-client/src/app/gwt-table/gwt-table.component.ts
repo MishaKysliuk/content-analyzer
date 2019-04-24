@@ -1,7 +1,10 @@
 import {Component, OnInit, ViewChild} from '@angular/core';
 import {KeywordUnit} from './keywordUnit';
 import {MatSort, MatTableDataSource} from '@angular/material';
-import {SelectUnit} from "./selectUnit";
+import {SelectUnit} from './selectUnit';
+import {formatDate} from '@angular/common';
+import {HttpClient, HttpHeaders} from '@angular/common/http';
+import {UrlService} from "../url.service";
 
 @Component({
   selector: 'app-gwt-table',
@@ -13,15 +16,23 @@ export class GwtTableComponent implements OnInit {
   keywordsData: KeywordUnit[];
   countries: SelectUnit[];
   devices: SelectUnit[];
+  showTypes: SelectUnit[];
   @ViewChild(MatSort) sort: MatSort;
+  dateFrom: Date;
+  dateTo: Date;
+  selectedDevice: string;
+  selectedCountry: string;
+  url: string;
 
   dataSource: MatTableDataSource<KeywordUnit>;
   displayedColumns: string[] = ['keyword', 'inKeyword', 'inIgnored', 'position', 'clicks', 'impressions', 'inText', 'where'];
 
-  constructor() {
+  constructor(private http: HttpClient, private urlService: UrlService) {
   }
 
   ngOnInit() {
+    this.dateFrom = new Date();
+    this.dateTo = new Date();
     this.keywordsData = [];
     this.keywordsData.push(new KeywordUnit('casino online paypal', 2, 111, 123, 4, 'p'));
     this.keywordsData.push(new KeywordUnit('casino online paypal play', 2, 11155, 1232, 4, 'h1'));
@@ -33,6 +44,11 @@ export class GwtTableComponent implements OnInit {
 
     this.countries = this.getCountriesForFilter();
     this.devices = this.getDevicesForFilter();
+    this.showTypes = this.getShowTypesForFilter();
+
+    this.urlService.urlToRetrieveContent.subscribe((url: string) => {
+      this.url = url;
+    });
   }
 
   applyFilter(filterValue: string) {
@@ -46,12 +62,41 @@ export class GwtTableComponent implements OnInit {
     }
   }
 
+  fetchData() {
+    console.log(this.formatDate(this.dateFrom));
+    console.log(this.selectedCountry);
+    const body = {
+      dateFrom: this.formatDate(this.dateFrom),
+      dateTo: this.formatDate(this.dateTo),
+      device: this.selectedDevice,
+      country: this.selectedCountry,
+      url: this.url
+    };
+    const httpOptions = {
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json'
+      })
+    };
+    this.http.post<KeywordUnit[]>('/api/retrieve_gwt', JSON.stringify(body), httpOptions)
+      .subscribe(
+        res => {
+          this.keywordsData = res;
+        }
+      );
+  }
+
   onIgnoreToggle(keyword: KeywordUnit) {
     keyword.isIgnored = !keyword.isIgnored;
     if (keyword.isIgnored === true) {
       keyword.isTarget = false;
     }
   }
+
+  formatDate(date: Date): string {
+    return formatDate(date, 'yyyy-MM-dd', 'en-US');
+  }
+
+
 
   getCountriesForFilter(): SelectUnit[] {
     const countries: SelectUnit[] = [];
@@ -100,16 +145,27 @@ export class GwtTableComponent implements OnInit {
     countries.push(new SelectUnit('United States', 'USA'));
 
     countries.sort((a, b) => (a.label > b.label) ? 1 : ((b.label > a.label) ? -1 : 0));
+    countries.unshift(new SelectUnit('None', null));
 
     return countries;
   }
 
   getDevicesForFilter(): SelectUnit[] {
     const devices: SelectUnit[] = [];
+    devices.push(new SelectUnit('None', null));
     devices.push(new SelectUnit('Desktop', 'DESKTOP'));
     devices.push(new SelectUnit('Mobile', 'MOBILE'));
     devices.push(new SelectUnit('Tablet', 'TABLET'));
     return devices;
+  }
+
+  getShowTypesForFilter(): SelectUnit[] {
+    const showTypes: SelectUnit[] = [];
+    showTypes.push(new SelectUnit('Show All', 'ALL'));
+    showTypes.push(new SelectUnit('Show Target', 'TARGET'));
+    showTypes.push(new SelectUnit('Show Ignored', 'IGNORED'));
+    showTypes.push(new SelectUnit('Show Undefined', 'UNDEFINED'));
+    return showTypes;
   }
 
 }

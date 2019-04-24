@@ -19,3 +19,48 @@
 .main-container {
   margin: 10px 20px;
 }
+
+.request-filter-container {
+  display: flex;
+  margin: 10px 20px;
+  justify-content: space-between;
+}
+
+.live-filter-container {
+  display: flex;
+  margin: 10px 20px;
+  justify-content: space-between;
+}
+
+.country-select {
+  flex: 0 0 15%;
+}
+
+.device-select {
+  flex: 0 0 10%;
+}
+
+.date-picker-area {
+  flex: 0 0 35%;
+  display: flex;
+  justify-content: space-between;
+}
+
+.date-picker {
+  flex: 0 0 40%;
+}
+
+.date-dash {
+  flex: 0 0 10%;
+  align-self: center;
+  text-align: center;
+}
+
+.keyword-filter {
+  flex: 0 0 40%;
+}
+
+.fetch-button {
+  height: 40%;
+  align-self: center;
+}

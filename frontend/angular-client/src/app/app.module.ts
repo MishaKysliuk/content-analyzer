@@ -23,7 +23,8 @@ import {
   MatSelectModule,
   MatDatepickerModule,
   MatSlideToggleModule,
-  MatNativeDateModule
+  MatNativeDateModule,
+  MatButtonModule
 } from '@angular/material';
 import { KeywordsTableComponent } from './ignored-keywords/keywords-table/keywords-table.component';
 import { GwtTableComponent } from './gwt-table/gwt-table.component';
@@ -56,7 +57,8 @@ import { GwtTableComponent } from './gwt-table/gwt-table.component';
     MatSelectModule,
     MatDatepickerModule,
     MatSlideToggleModule,
-    MatNativeDateModule
+    MatNativeDateModule,
+    MatButtonModule
   ],
   providers: [
     UrlService,
