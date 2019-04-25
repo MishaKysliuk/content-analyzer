@@ -1,16 +1,16 @@
 <div class="container">
   <div class="card">
-    <div class="card-header" id="ignoredKeywordsHeading">
+    <div class="card-header" id="gwtAnalyzerHeading">
       <h5>
-        Select Ignored Keywords
+        GWT Analyzer
       </h5>
-      <button class="btn" data-toggle="collapse" data-target="#collapseIgnoredKeywords" aria-expanded="true"
-              aria-controls="collapseIgnoredKeywords">
+      <button class="btn" data-toggle="collapse" data-target="#collapseGwtAnalyzer" aria-expanded="true"
+              aria-controls="collapseGwtAnalyzer">
         <i class="icon-plus-circled"></i>
       </button>
     </div>
 
-    <div id="collapseIgnoredKeywords" class="collapse show" aria-labelledby="ignoredKeywordsHeading">
+    <div id="collapseGwtAnalyzer" class="collapse show" aria-labelledby="gwtAnalyzerHeading">
       <div class="main-container">
 
         <div class="request-filter-container">
@@ -43,7 +43,7 @@
             </mat-form-field>
           </div>
 
-          <button mat-raised-button color="primary" class="fetch-button" (click)="fetchData()">Fetch</button>
+          <button [disabled]="!isGwtFetchEnabled" mat-raised-button color="primary" class="fetch-button" (click)="fetchData()">Fetch</button>
         </div>
         <div class="live-filter-container">
           <mat-form-field class="device-select">

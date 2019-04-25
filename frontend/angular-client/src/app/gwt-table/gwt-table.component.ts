@@ -1,19 +1,22 @@
-import {Component, OnInit, ViewChild} from '@angular/core';
+import {Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {KeywordUnit} from './keywordUnit';
 import {MatSort, MatTableDataSource} from '@angular/material';
 import {SelectUnit} from './selectUnit';
 import {formatDate} from '@angular/common';
 import {HttpClient, HttpHeaders} from '@angular/common/http';
-import {UrlService} from "../url.service";
+import {UrlService} from '../url.service';
+import {ContentService} from '../content.service';
+import {ContentUnit} from '../content-table/contentUnit';
 
 @Component({
   selector: 'app-gwt-table',
   templateUrl: './gwt-table.component.html',
   styleUrls: ['./gwt-table.component.css']
 })
-export class GwtTableComponent implements OnInit {
+export class GwtTableComponent implements OnInit, OnDestroy {
 
   keywordsData: KeywordUnit[];
+  content: ContentUnit[];
   countries: SelectUnit[];
   devices: SelectUnit[];
   showTypes: SelectUnit[];
@@ -23,11 +26,12 @@ export class GwtTableComponent implements OnInit {
   selectedDevice: string;
   selectedCountry: string;
   url: string;
+  isGwtFetchEnabled: boolean;
 
   dataSource: MatTableDataSource<KeywordUnit>;
   displayedColumns: string[] = ['keyword', 'inKeyword', 'inIgnored', 'position', 'clicks', 'impressions', 'inText', 'where'];
 
-  constructor(private http: HttpClient, private urlService: UrlService) {
+  constructor(private http: HttpClient, private urlService: UrlService, private contentService: ContentService) {
   }
 
   ngOnInit() {
@@ -49,6 +53,18 @@ export class GwtTableComponent implements OnInit {
     this.urlService.urlToRetrieveContent.subscribe((url: string) => {
       this.url = url;
     });
+    this.urlService.isGwtFetchEnabled.subscribe((isGwtFetchEnabled: boolean) => {
+      this.isGwtFetchEnabled = isGwtFetchEnabled;
+    });
+    this.contentService.content.subscribe((content: ContentUnit[]) => {
+      this.content = content;
+    });
+  }
+
+  ngOnDestroy() {
+    this.contentService.content.unsubscribe();
+    this.urlService.urlToRetrieveContent.unsubscribe();
+    this.urlService.isGwtFetchEnabled.unsubscribe();
   }
 
   applyFilter(filterValue: string) {
@@ -63,14 +79,13 @@ export class GwtTableComponent implements OnInit {
   }
 
   fetchData() {
-    console.log(this.formatDate(this.dateFrom));
-    console.log(this.selectedCountry);
     const body = {
       dateFrom: this.formatDate(this.dateFrom),
       dateTo: this.formatDate(this.dateTo),
       device: this.selectedDevice,
       country: this.selectedCountry,
-      url: this.url
+      url: this.url,
+      content: this.content
     };
     const httpOptions = {
       headers: new HttpHeaders({

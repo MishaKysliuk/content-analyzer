@@ -1,5 +1,5 @@
 import {Component} from '@angular/core';
-import {HTTPStatus} from './http-status.interceptor';
+import {HTTPStatus} from './http.interceptor';
 
 @Component({
   selector: 'app-root',
@@ -7,7 +7,7 @@ import {HTTPStatus} from './http-status.interceptor';
   styleUrls: ['./app.component.css']
 })
 export class AppComponent {
-  title = 'angular-client';
+  title = 'Content Analyzer';
   HTTPActivity: boolean;
 
   constructor(private httpStatus: HTTPStatus) {

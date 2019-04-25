@@ -1,14 +1,15 @@
 import { Injectable } from '@angular/core';
 
 import {
+  HttpErrorResponse,
   HttpEvent,
   HttpHandler,
   HttpInterceptor,
   HttpRequest
 } from '@angular/common/http';
 
-import {Observable, BehaviorSubject, throwError} from 'rxjs';
-import { catchError, finalize, map } from 'rxjs/operators';
+import {Observable, BehaviorSubject} from 'rxjs';
+import {catchError, finalize, map} from 'rxjs/operators';
 
 @Injectable()
 export class HTTPStatus {
@@ -59,7 +60,10 @@ export class HTTPListener implements HttpInterceptor {
         if (!this.status.isRequestPending()) {
           this.status.setHttpStatus(false);
         }
-      })
+      }),
+      catchError((error: HttpErrorResponse) => {
+         throw new Error(error.error.message);
+       })
     );
   }
 }

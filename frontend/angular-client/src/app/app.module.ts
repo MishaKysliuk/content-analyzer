@@ -8,11 +8,10 @@ import {AppComponent} from './app.component';
 import {HeaderUrlComponent} from './header-url/header-url.component';
 import {ContentTableComponent} from './content-table/content-table.component';
 import {UrlService} from './url.service';
-import {HttpErrorInterceptor} from './http-error.interceptor';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {ToastrModule} from 'ngx-toastr';
 import {GlobalErrorHandler} from './global-error-handler';
-import {HTTPListener, HTTPStatus} from './http-status.interceptor';
+import {HTTPListener, HTTPStatus} from './http.interceptor';
 import {IgnoredKeywordsComponent} from './ignored-keywords/ignored-keywords.component';
 import {
   MatInputModule,
@@ -28,6 +27,7 @@ import {
 } from '@angular/material';
 import { KeywordsTableComponent } from './ignored-keywords/keywords-table/keywords-table.component';
 import { GwtTableComponent } from './gwt-table/gwt-table.component';
+import {ContentService} from './content.service';
 
 @NgModule({
   declarations: [
@@ -62,12 +62,8 @@ import { GwtTableComponent } from './gwt-table/gwt-table.component';
   ],
   providers: [
     UrlService,
+    ContentService,
     HTTPStatus,
-    {
-      provide: HTTP_INTERCEPTORS,
-      useClass: HttpErrorInterceptor,
-      multi: true,
-    },
     {
       provide: HTTP_INTERCEPTORS,
       useClass: HTTPListener,

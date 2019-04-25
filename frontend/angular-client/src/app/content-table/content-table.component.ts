@@ -1,9 +1,10 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
+import {AfterContentInit, Component, OnDestroy, OnInit} from '@angular/core';
 import {ContentUnit} from './contentUnit';
 import {UrlService} from '../url.service';
 import {HttpClient} from '@angular/common/http';
 import {ServerResponseUnit} from './serverResponseUnit';
 import {GlobalErrorHandler} from '../global-error-handler';
+import {ContentService} from '../content.service';
 
 @Component({
   selector: 'app-content-table',
@@ -11,17 +12,23 @@ import {GlobalErrorHandler} from '../global-error-handler';
   styleUrls: ['./content-table.component.css'],
   providers: [GlobalErrorHandler]
 })
-export class ContentTableComponent implements OnInit, OnDestroy {
+export class ContentTableComponent implements OnInit, OnDestroy, AfterContentInit {
 
-  public content: ContentUnit[] = [];
+  public content: ContentUnit[];
 
-  constructor(private urlService: UrlService, private http: HttpClient, private errorHandler: GlobalErrorHandler) {
+  constructor(private urlService: UrlService, private contentService: ContentService,
+              private http: HttpClient, private errorHandler: GlobalErrorHandler) {
   }
 
   ngOnInit() {
+    this.content = [];
     this.urlService.urlToRetrieveContent.subscribe((url: string) => {
       this.retrieveContentFromUrl(url);
     });
+  }
+
+  ngAfterContentInit() {
+    this.contentService.content.next(this.content);
   }
 
   ngOnDestroy() {
@@ -29,7 +36,7 @@ export class ContentTableComponent implements OnInit, OnDestroy {
   }
 
   retrieveContentFromUrl(url: string) {
-    this.content = [];
+    this.content.splice(0, this.content.length);
     if (!url) {
       this.errorHandler.handleError({message: 'URL must not be empty!'});
     } else {
@@ -39,6 +46,11 @@ export class ContentTableComponent implements OnInit, OnDestroy {
           res.forEach(unit => {
             this.content.push(new ContentUnit(unit.tag, unit.text, false));
           });
+          this.urlService.isGwtFetchEnabled.next(true);
+        },
+        error => {
+          this.urlService.isGwtFetchEnabled.next(false);
+          this.errorHandler.handleError(error);
         }
       );
     }
