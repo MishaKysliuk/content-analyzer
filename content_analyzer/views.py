@@ -4,6 +4,7 @@ from django.shortcuts import render
 from django.http import JsonResponse
 
 from content_analyzer.gwt_request_builder import build_request
+from content_analyzer.intext_counter import fill_keywords_count
 from content_analyzer.web_content_parser import WebPageParser
 from content_analyzer.webmaster_api import WebmasterService
 
@@ -27,7 +28,24 @@ def retrieve_gwt(request):
     webmaster_api = WebmasterService()
     try:
         res = webmaster_api.execute_request(root_url, gwt_request)
+        keywords = map_keywords(res.get('rows', []))
+        fill_keywords_count(keywords, body['content'])
     except Exception as e:
         return JsonResponse({'message': str(e)}, status=500)
-    return JsonResponse('Good luck', safe=False)
+    return JsonResponse(keywords, safe=False)
 
+def map_keywords(rows):
+    result = []
+    for keyword in rows:
+        result.append({
+            'keyword': keyword['keys'][0],
+            'position': keyword['position'],
+            'impressions': keyword['impressions'],
+            'clicks': keyword['clicks'],
+            'inText': 0,
+            'where': '',
+            'isTarget': False,
+            'isIgnored': False
+        })
+
+    return result

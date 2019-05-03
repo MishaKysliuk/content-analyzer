@@ -38,8 +38,8 @@ export class GwtTableComponent implements OnInit, OnDestroy {
     this.dateFrom = new Date();
     this.dateTo = new Date();
     this.keywordsData = [];
-    this.keywordsData.push(new KeywordUnit('casino online paypal', 2, 111, 123, 4, 'p'));
-    this.keywordsData.push(new KeywordUnit('casino online paypal play', 2, 11155, 1232, 4, 'h1'));
+    // this.keywordsData.push(new KeywordUnit('casino online paypal', 2, 111, 123, 4, 'p'));
+    // this.keywordsData.push(new KeywordUnit('casino online paypal play', 2, 11155, 1232, 4, 'h1'));
     this.dataSource = new MatTableDataSource<KeywordUnit>(this.keywordsData);
     this.dataSource.sort = this.sort;
 
@@ -79,13 +79,18 @@ export class GwtTableComponent implements OnInit, OnDestroy {
   }
 
   fetchData() {
+    const parsedTags = [];
+    this.content.forEach(unit => parsedTags.push({
+      tag: unit.insideTag,
+      text: unit.text
+    }));
     const body = {
       dateFrom: this.formatDate(this.dateFrom),
       dateTo: this.formatDate(this.dateTo),
       device: this.selectedDevice,
       country: this.selectedCountry,
       url: this.url,
-      content: this.content
+      content: parsedTags
     };
     const httpOptions = {
       headers: new HttpHeaders({
@@ -96,6 +101,7 @@ export class GwtTableComponent implements OnInit, OnDestroy {
       .subscribe(
         res => {
           this.keywordsData = res;
+          this.dataSource.data = this.keywordsData;
         }
       );
   }

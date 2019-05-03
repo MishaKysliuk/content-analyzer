@@ -13,29 +13,3 @@ class WebmasterService:
 
     def execute_request(self, url, request):
         return self.webmasters_service.searchanalytics().query(siteUrl=url, body=request).execute()
-
-
-request = {
-    'startDate': '2018-02-12',
-    'endDate': '2019-02-20',
-    'dimensions': ['query'],
-    'rowLimit': 25000,
-    "dimensionFilterGroups": [
-        {
-            "groupType": "and",
-            "filters": [
-                {
-                    "dimension": 'page',
-                    "operator": 'equals',
-                    "expression": 'https://barkymate.com/'
-                },
-                {
-                    "dimension": 'device',
-                    "operator": 'equals',
-                    "expression": 'DESKTOP'
-                }
-            ]
-        }
-    ]
-}
-
