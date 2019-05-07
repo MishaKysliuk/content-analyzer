@@ -4,7 +4,8 @@ from django.shortcuts import render
 from django.http import JsonResponse
 
 from content_analyzer.gwt_request_builder import build_request
-from content_analyzer.intext_counter import fill_keywords_count
+from content_analyzer.intext_counter import fill_keywords_count, InTextCounterService, count_words
+from content_analyzer.phrase_counter import PhraseCounterService, form_same_count_keywords
 from content_analyzer.web_content_parser import WebPageParser
 from content_analyzer.webmaster_api import WebmasterService
 
@@ -34,6 +35,49 @@ def retrieve_gwt(request):
         return JsonResponse({'message': str(e)}, status=500)
     return JsonResponse(keywords, safe=False)
 
+def retrieve_phrases_analysis(request):
+    result = {
+        'wordsCount': 0,
+        'analyzedResult': []
+    }
+    try:
+        body = json.loads(request.body.decode(request.POST.encoding))
+        content = body['content']
+        divide_count = body['divide_count']
+        keywords = body['keywords']
+
+        words_count = count_words(content)
+
+        in_text_counter_service = InTextCounterService()
+        in_text_counter_service.add_documents(content)
+        in_text_counter_service.open_searcher()
+
+        phrase_counter_service = PhraseCounterService()
+        phrase_counter_service.add_documents(keywords)
+        phrase_counter_service.open_searcher()
+
+        for divider in range(1, divide_count + 1):
+            internal_result = []
+            divided_keywords = form_same_count_keywords(keywords, divider)
+            for keyword in divided_keywords:
+                in_text_count = in_text_counter_service.process_keyword(keyword)
+                in_target_count = phrase_counter_service.keyword_count(keyword)
+                internal_result.append({
+                    'keyword': keyword,
+                    'inTextCount': in_text_count,
+                'inTargetCount': in_target_count,
+                'percent': (in_text_count / words_count) * 100
+                })
+
+            result['analyzedResult'].append(internal_result)
+
+        result['wordsCount'] = words_count
+        in_text_counter_service.close_searcher()
+        phrase_counter_service.close_searcher()
+    except Exception as e:
+        return JsonResponse({'message': str(e)}, status=500)
+    return JsonResponse(result, safe=False)
+
 def map_keywords(rows):
     result = []
     for keyword in rows:
@@ -47,5 +91,4 @@ def map_keywords(rows):
             'isTarget': False,
             'isIgnored': False
         })
-
     return result

@@ -59,3 +59,11 @@ def fill_keywords_count(keywords, content):
         keyword['inText'] = result[1]
 
     service.close_searcher()
+
+def count_words(content):
+    result = 0
+    analyzer = StandardAnalyzer()
+    for unit in content:
+        # print ([(t.text) for t in analyzer(unit['text'], removestops=True)])
+        result += len([t for t in analyzer(unit['text'])])
+    return result

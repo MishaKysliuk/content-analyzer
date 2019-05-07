@@ -1,0 +1,35 @@
+<div class="container">
+  <div class="card">
+    <div class="card-header" id="contentAnalyzerHeading">
+      <h5>
+        Content Analyzer
+      </h5>
+      <button class="btn" data-toggle="collapse" data-target="#collapseContentAnalyzer" aria-expanded="true"
+              aria-controls="collapseContentAnalyzer">
+        <i class="icon-plus-circled"></i>
+      </button>
+    </div>
+
+    <div id="collapseContentAnalyzer" class="collapse show" aria-labelledby="contentAnalyzerHeading">
+      <div class="main-container">
+
+        <div class="request-filter-container">
+          <mat-form-field class="divider-select">
+            <mat-label>Divider</mat-label>
+            <mat-select [(value)]="selectedDivider" panelClass="select-panel">
+              <mat-option *ngFor="let divider of dividers" [value]="divider">{{divider}}</mat-option>
+            </mat-select>
+          </mat-form-field>
+          <button mat-raised-button color="primary" class="fetch-button" (click)="fetchAnalyzedData()">Fetch</button>
+          <span>Words count: {{wordsCount}}</span>
+        </div>
+
+        <div class="tables-container">
+          <div class="separate-table" *ngFor="let ordinal of dividers">
+            <app-analysis-table [hidden]="!isTableVisible[ordinal]" [keywordsData]="analyzedData[ordinal] ? analyzedData[ordinal] : []"></app-analysis-table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

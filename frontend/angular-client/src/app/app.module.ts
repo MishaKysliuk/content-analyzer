@@ -28,6 +28,9 @@ import {
 import { KeywordsTableComponent } from './ignored-keywords/keywords-table/keywords-table.component';
 import { GwtTableComponent } from './gwt-table/gwt-table.component';
 import {ContentService} from './content.service';
+import { PhraseAnalysisComponent } from './phrase-analysis/phrase-analysis.component';
+import { AnalysisTableComponent } from './phrase-analysis/analysis-table/analysis-table.component';
+import {ContentAnalyzerService} from './contentAnalyzer.service';
 
 @NgModule({
   declarations: [
@@ -36,7 +39,9 @@ import {ContentService} from './content.service';
     ContentTableComponent,
     IgnoredKeywordsComponent,
     KeywordsTableComponent,
-    GwtTableComponent
+    GwtTableComponent,
+    PhraseAnalysisComponent,
+    AnalysisTableComponent
   ],
   imports: [
     BrowserModule,
@@ -63,16 +68,17 @@ import {ContentService} from './content.service';
   providers: [
     UrlService,
     ContentService,
+    ContentAnalyzerService,
     HTTPStatus,
     {
       provide: HTTP_INTERCEPTORS,
       useClass: HTTPListener,
       multi: true
     },
-    {
-      provide: ErrorHandler,
-      useClass: GlobalErrorHandler
-    }
+    // {
+    //   provide: ErrorHandler,
+    //   useClass: GlobalErrorHandler
+    // }
   ],
   bootstrap: [AppComponent]
 })
