@@ -25,8 +25,8 @@
         </div>
 
         <div class="tables-container">
-          <div class="separate-table" *ngFor="let ordinal of dividers">
-            <app-analysis-table [hidden]="!isTableVisible[ordinal]" [keywordsData]="analyzedData[ordinal] ? analyzedData[ordinal] : []"></app-analysis-table>
+          <div class="separate-table" *ngFor="let ordinal of selectedWordsCount">
+            <app-analysis-table [keywordsData]="analyzedData[ordinal] ? analyzedData[ordinal] : []"></app-analysis-table>
           </div>
         </div>
       </div>

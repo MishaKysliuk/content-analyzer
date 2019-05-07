@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import {PhraseUnit} from './analysis-table/phraseUnit';
-import {ContentAnalyzerService} from '../contentAnalyzer.service';
 
 @Component({
   selector: 'app-phrase-analysis',
@@ -10,23 +9,20 @@ import {ContentAnalyzerService} from '../contentAnalyzer.service';
 export class PhraseAnalysisComponent implements OnInit {
 
   selectedDivider: number;
-  isTableHidden: boolean[];
   dividers: number[];
+  selectedWordsCount: number[];
   analyzedData: PhraseUnit[][];
   wordsCount: number;
 
-  constructor(private contentAnalyzerService: ContentAnalyzerService) { }
+  constructor() { }
 
   ngOnInit() {
     this.dividers = [1, 2, 3, 4, 5, 6];
-    this.analyzedData = [[], [], [], [], [], []];
   }
 
 
   fetchAnalyzedData() {
-    for (let i = this.selectedDivider; i < this.selectedDivider; i++) {
-      this.isTableHidden[i] = true;
-    }
+    this.selectedWordsCount = Array.from({length: this.selectedDivider}, (x, i) => i);
     this.analyzedData = [];
     this.wordsCount = 111;
     const ss = [];
@@ -40,7 +36,6 @@ export class PhraseAnalysisComponent implements OnInit {
     sss.push(new PhraseUnit('casino online', 1, 2, 3));
     sss.push(new PhraseUnit('casino online', 1, 2, 3));
     this.analyzedData.push(sss);
-    this.contentAnalyzerService.contentFetched.next();
   }
 
 }

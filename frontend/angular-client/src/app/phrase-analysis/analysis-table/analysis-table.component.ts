@@ -1,41 +1,43 @@
-import {AfterContentInit, Component, Input, OnDestroy, OnInit, ViewChild} from '@angular/core';
+import {Component, Input, OnInit, ViewChild} from '@angular/core';
 import {MatSort, MatTableDataSource} from '@angular/material';
 import {PhraseUnit} from './phraseUnit';
-import {ContentAnalyzerService} from '../../contentAnalyzer.service';
 
 @Component({
   selector: 'app-analysis-table',
   templateUrl: './analysis-table.component.html',
   styleUrls: ['./analysis-table.component.css']
 })
-export class AnalysisTableComponent implements OnInit, OnDestroy {
+export class AnalysisTableComponent implements OnInit {
 
-  @Input() keywordsData: PhraseUnit[];
+  private _keywordsData: PhraseUnit[];
   @ViewChild(MatSort) sort: MatSort;
 
   dataSource: MatTableDataSource<PhraseUnit>;
   displayedColumns: string[] = ['keyword', 'inTargetCount', 'inTextCount', 'percent'];
 
-  constructor(private contentAnalyzerService: ContentAnalyzerService) { }
+  constructor() {
+    this.dataSource = new MatTableDataSource<PhraseUnit>(this._keywordsData);
+  }
 
   ngOnInit() {
-    this.dataSource = new MatTableDataSource<PhraseUnit>(this.keywordsData);
     this.dataSource.sort = this.sort;
 
     this.dataSource.filterPredicate = (data: PhraseUnit, filter) =>
       data.keyword.indexOf(filter) !== -1;
+  }
 
-    this.contentAnalyzerService.contentFetched.subscribe(() => {
-      this.dataSource.data = this.keywordsData;
-    });
+  get keywordsData(): PhraseUnit[] {
+    return this._keywordsData;
+  }
+
+  @Input()
+  set keywordsData(keywordsData: PhraseUnit[]) {
+    this._keywordsData = keywordsData;
+    this.dataSource.data = this._keywordsData;
   }
 
   applyFilter(filterValue: string) {
     this.dataSource.filter = filterValue.trim().toLowerCase();
-  }
-
-  ngOnDestroy(): void {
-    this.contentAnalyzerService.contentFetched.unsubscribe();
   }
 
 }

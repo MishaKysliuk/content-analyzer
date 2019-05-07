@@ -30,7 +30,6 @@ import { GwtTableComponent } from './gwt-table/gwt-table.component';
 import {ContentService} from './content.service';
 import { PhraseAnalysisComponent } from './phrase-analysis/phrase-analysis.component';
 import { AnalysisTableComponent } from './phrase-analysis/analysis-table/analysis-table.component';
-import {ContentAnalyzerService} from './contentAnalyzer.service';
 
 @NgModule({
   declarations: [
@@ -68,17 +67,16 @@ import {ContentAnalyzerService} from './contentAnalyzer.service';
   providers: [
     UrlService,
     ContentService,
-    ContentAnalyzerService,
     HTTPStatus,
     {
       provide: HTTP_INTERCEPTORS,
       useClass: HTTPListener,
       multi: true
     },
-    // {
-    //   provide: ErrorHandler,
-    //   useClass: GlobalErrorHandler
-    // }
+    {
+      provide: ErrorHandler,
+      useClass: GlobalErrorHandler
+    }
   ],
   bootstrap: [AppComponent]
 })
