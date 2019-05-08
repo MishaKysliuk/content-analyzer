@@ -1,4 +1,34 @@
 .fetch-button {
-  height: 40%;
   align-self: center;
 }
+
+.request-filter-container {
+  margin: 10px 20px;
+  display: flex;
+}
+
+.divider-select {
+  flex: 0 0 50%;
+  display: flex;
+  justify-content: flex-start;
+}
+
+.words-count {
+  flex: 0 0 50%;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+}
+
+.tables-container {
+  width: 100%;
+  margin: 0 2%;
+  /*text-align: center;*/
+}
+
+.separate-table {
+  display: inline-block;
+  width: 31%;
+  margin: .5% .5%;
+}
+

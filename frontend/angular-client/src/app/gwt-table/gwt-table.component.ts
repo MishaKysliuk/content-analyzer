@@ -1,4 +1,4 @@
-import {Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
+import {AfterContentInit, Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {KeywordUnit} from './keywordUnit';
 import {MatSort, MatTableDataSource} from '@angular/material';
 import {SelectUnit} from './selectUnit';
@@ -13,7 +13,7 @@ import {ContentUnit} from '../content-table/contentUnit';
   templateUrl: './gwt-table.component.html',
   styleUrls: ['./gwt-table.component.css']
 })
-export class GwtTableComponent implements OnInit, OnDestroy {
+export class GwtTableComponent implements OnInit, OnDestroy, AfterContentInit {
 
   keywordsData: KeywordUnit[];
   content: ContentUnit[];
@@ -61,6 +61,20 @@ export class GwtTableComponent implements OnInit, OnDestroy {
     });
   }
 
+  isTargetKeywordsPresent() {
+    for (const keyword of this.keywordsData) {
+      if (keyword.isTarget) {
+        return true;
+      }
+    }
+
+    return false;
+  }
+
+  ngAfterContentInit() {
+    this.contentService.keywords.next(this.keywordsData);
+  }
+
   ngOnDestroy() {
     this.contentService.content.unsubscribe();
     this.urlService.urlToRetrieveContent.unsubscribe();
@@ -76,9 +90,19 @@ export class GwtTableComponent implements OnInit, OnDestroy {
     if (keyword.isTarget === true) {
       keyword.isIgnored = false;
     }
+    this.contentService.isTargetKeywordsPresent.next(this.isTargetKeywordsPresent());
+  }
+
+  onIgnoreToggle(keyword: KeywordUnit) {
+    keyword.isIgnored = !keyword.isIgnored;
+    if (keyword.isIgnored === true) {
+      keyword.isTarget = false;
+    }
+    this.contentService.isTargetKeywordsPresent.next(this.isTargetKeywordsPresent());
   }
 
   fetchData() {
+    this.keywordsData.splice(0, this.keywordsData.length);
     const parsedTags = [];
     this.content.forEach(unit => parsedTags.push({
       tag: unit.insideTag,
@@ -100,23 +124,16 @@ export class GwtTableComponent implements OnInit, OnDestroy {
     this.http.post<KeywordUnit[]>('/api/retrieve_gwt', JSON.stringify(body), httpOptions)
       .subscribe(
         res => {
-          this.keywordsData = res;
+          res.forEach(keyword => this.keywordsData.push(keyword));
           this.dataSource.data = this.keywordsData;
+          this.contentService.isTargetKeywordsPresent.next(this.isTargetKeywordsPresent());
         }
       );
-  }
-
-  onIgnoreToggle(keyword: KeywordUnit) {
-    keyword.isIgnored = !keyword.isIgnored;
-    if (keyword.isIgnored === true) {
-      keyword.isTarget = false;
-    }
   }
 
   formatDate(date: Date): string {
     return formatDate(date, 'yyyy-MM-dd', 'en-US');
   }
-
 
 
   getCountriesForFilter(): SelectUnit[] {

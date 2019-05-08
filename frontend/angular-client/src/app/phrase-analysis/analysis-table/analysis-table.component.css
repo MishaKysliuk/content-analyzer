@@ -4,9 +4,11 @@
   overflow: auto;
 }
 
-.main-container {
-  margin: 10px 20px;
-}
+/*.main-container {*/
+  /*!*display: inline-block;*!*/
+  /*margin: 5px 5px;*/
+  /*width: 100%;*/
+/*}*/
 
 .filter-container {
   width: 100%;

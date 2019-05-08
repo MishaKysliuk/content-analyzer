@@ -43,7 +43,7 @@ def retrieve_phrases_analysis(request):
     try:
         body = json.loads(request.body.decode(request.POST.encoding))
         content = body['content']
-        divide_count = body['divide_count']
+        divide_count = body['divideCount']
         keywords = body['keywords']
 
         words_count = count_words(content)
@@ -56,17 +56,17 @@ def retrieve_phrases_analysis(request):
         phrase_counter_service.add_documents(keywords)
         phrase_counter_service.open_searcher()
 
-        for divider in range(1, divide_count + 1):
+        for divider in range(0, divide_count):
             internal_result = []
-            divided_keywords = form_same_count_keywords(keywords, divider)
+            divided_keywords = form_same_count_keywords(keywords, divider + 1)
             for keyword in divided_keywords:
-                in_text_count = in_text_counter_service.process_keyword(keyword)
+                in_text_count = in_text_counter_service.process_keyword(keyword)[1]
                 in_target_count = phrase_counter_service.keyword_count(keyword)
                 internal_result.append({
                     'keyword': keyword,
                     'inTextCount': in_text_count,
-                'inTargetCount': in_target_count,
-                'percent': (in_text_count / words_count) * 100
+                    'inTargetCount': in_target_count,
+                    'percent': (in_text_count / words_count) * 100
                 })
 
             result['analyzedResult'].append(internal_result)
