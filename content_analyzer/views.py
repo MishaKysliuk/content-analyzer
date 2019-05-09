@@ -1,10 +1,11 @@
 import json
 
 from django.shortcuts import render
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponse
 
 from content_analyzer.gwt_request_builder import build_request
 from content_analyzer.intext_counter import fill_keywords_count, InTextCounterService, count_words
+from content_analyzer.models import SavedPage, ContentUnit, TargetKeyword, IgnoredKeyword
 from content_analyzer.phrase_counter import PhraseCounterService, form_same_count_keywords
 from content_analyzer.web_content_parser import WebPageParser
 from content_analyzer.webmaster_api import WebmasterService
@@ -92,3 +93,41 @@ def map_keywords(rows):
             'isIgnored': False
         })
     return result
+
+def save_url(request):
+    body = json.loads(request.body.decode(request.POST.encoding))
+    url = body['url']
+    content = body.get('content')
+    target_keywords = body.get('target')
+    ignored_keywords = body.get('ignored')
+    try:
+        page = SavedPage(url=url)
+        page.save()
+        if content:
+            for content_unit in content:
+                content_to_save = ContentUnit(tag=content_unit['tag'], text=content_unit['text'], related_page=page)
+                content_to_save.save()
+        if ignored_keywords:
+            for ignored_unit in ignored_keywords:
+                ignored_to_save = IgnoredKeyword(keyword=ignored_unit['keyword'], related_page=page)
+                ignored_to_save.save()
+        if target_keywords:
+            for target_unit in target_keywords:
+                target_to_save = TargetKeyword(keyword=target_unit['keyword'], related_page=page)
+                target_to_save.save()
+    except Exception as e:
+        return JsonResponse({'message': str(e)}, status=500)
+    return HttpResponse('')
+
+
+def retrieve_saved_urls(request):
+    saved_urls = []
+    try:
+        for saved_url in SavedPage.objects.values():
+            saved_urls.append({
+                'id': saved_url.get('id'),
+                'url': saved_url.get('url')
+            })
+    except Exception as e:
+        return JsonResponse({'message': str(e)}, status=500)
+    return JsonResponse(saved_urls, safe=False)

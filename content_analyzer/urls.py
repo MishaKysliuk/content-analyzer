@@ -23,5 +23,7 @@ urlpatterns = [
     path('api/retrieve_content', views.retrieve_content),
     path('api/retrieve_gwt', views.retrieve_gwt),
     path('api/retrieve_analysis', views.retrieve_phrases_analysis),
+    path('api/save_url', views.save_url),
+    path('api/retrieve_urls', views.retrieve_saved_urls),
     path('', include('frontend.urls')),
 ]

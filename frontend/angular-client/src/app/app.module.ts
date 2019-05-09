@@ -1,6 +1,6 @@
 import {BrowserModule} from '@angular/platform-browser';
 import {ErrorHandler, NgModule} from '@angular/core';
-import {FormsModule} from '@angular/forms';
+import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {RouterModule} from '@angular/router';
 import {HTTP_INTERCEPTORS, HttpClientModule, HttpClientXsrfModule} from '@angular/common/http';
 
@@ -23,7 +23,7 @@ import {
   MatDatepickerModule,
   MatSlideToggleModule,
   MatNativeDateModule,
-  MatButtonModule
+  MatButtonModule, MatAutocompleteModule
 } from '@angular/material';
 import { KeywordsTableComponent } from './ignored-keywords/keywords-table/keywords-table.component';
 import { GwtTableComponent } from './gwt-table/gwt-table.component';
@@ -62,7 +62,9 @@ import { AnalysisTableComponent } from './phrase-analysis/analysis-table/analysi
     MatDatepickerModule,
     MatSlideToggleModule,
     MatNativeDateModule,
-    MatButtonModule
+    MatButtonModule,
+    ReactiveFormsModule,
+    MatAutocompleteModule
   ],
   providers: [
     UrlService,

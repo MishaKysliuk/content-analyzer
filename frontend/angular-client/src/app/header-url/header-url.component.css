@@ -5,11 +5,24 @@
   justify-content: space-between;
   flex: 0 0 60%;
 }
-
-.url-input {
-  flex: 0 0 85%;
+.input-container {
+  flex: 0 0 70%;
+  display: flex;
+  justify-content: center;
 }
 
-.btn-go {
-  flex: 0 0 10%;
+.buttons-container {
+  display: flex;
+  flex: 0 0 30%;
+  justify-content: flex-start;
+  align-items: center;
+}
+
+.url-input {
+  margin: 0 auto;
+  width: 90%;
+}
+
+.header-btn {
+  margin-right: 10px;
 }

@@ -1,8 +1,21 @@
 <div class="container">
   <div class="row">
     <div class="header-row">
-      <input type="text" class="form-control url-input" [(ngModel)]="url" placeholder="URL" aria-label="URL">
-      <button type="button" class="btn btn-primary btn-go" (click)="processUrl()">Go</button>
+      <div class="input-container">
+        <mat-form-field class="url-input">
+          <input type="text" placeholder="URL" aria-label="URL" matInput
+                 [formControl]="myControl" [matAutocomplete]="auto" [(ngModel)]="url">
+          <mat-autocomplete #auto="matAutocomplete">
+            <mat-option *ngFor="let savedUrl of filteredUrls | async" [value]="savedUrl.url">
+              {{savedUrl.url}}
+            </mat-option>
+          </mat-autocomplete>
+        </mat-form-field>
+      </div>
+      <div class="buttons-container">
+        <button type="button" class="btn btn-primary header-btn" (click)="processUrl()">Go</button>
+        <button type="button" class="btn btn-primary header-btn" (click)="saveUrl()">Save</button>
+      </div>
     </div>
   </div>
 </div>
