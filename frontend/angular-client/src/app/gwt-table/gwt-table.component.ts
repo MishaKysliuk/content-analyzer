@@ -7,6 +7,8 @@ import {HttpClient, HttpHeaders} from '@angular/common/http';
 import {UrlService} from '../url.service';
 import {ContentService} from '../content.service';
 import {ContentUnit} from '../content-table/contentUnit';
+import {SavedUrl} from '../header-url/savedUrl';
+import {HttpHeader} from "../http.interceptor";
 
 @Component({
   selector: 'app-gwt-table',
@@ -25,7 +27,7 @@ export class GwtTableComponent implements OnInit, OnDestroy, AfterContentInit {
   dateTo: Date;
   selectedDevice: string;
   selectedCountry: string;
-  url: string;
+  url: SavedUrl | string;
   isGwtFetchEnabled: boolean;
 
   dataSource: MatTableDataSource<KeywordUnit>;
@@ -38,8 +40,6 @@ export class GwtTableComponent implements OnInit, OnDestroy, AfterContentInit {
     this.dateFrom = new Date();
     this.dateTo = new Date();
     this.keywordsData = [];
-    // this.keywordsData.push(new KeywordUnit('casino online paypal', 2, 111, 123, 4, 'p'));
-    // this.keywordsData.push(new KeywordUnit('casino online paypal play', 2, 11155, 1232, 4, 'h1'));
     this.dataSource = new MatTableDataSource<KeywordUnit>(this.keywordsData);
     this.dataSource.sort = this.sort;
 
@@ -108,7 +108,7 @@ export class GwtTableComponent implements OnInit, OnDestroy, AfterContentInit {
       tag: unit.insideTag,
       text: unit.text
     }));
-    const body = {
+    const body: any = {
       dateFrom: this.formatDate(this.dateFrom),
       dateTo: this.formatDate(this.dateTo),
       device: this.selectedDevice,
@@ -116,12 +116,13 @@ export class GwtTableComponent implements OnInit, OnDestroy, AfterContentInit {
       url: this.url,
       content: parsedTags
     };
-    const httpOptions = {
-      headers: new HttpHeaders({
-        'Content-Type': 'application/json'
-      })
-    };
-    this.http.post<KeywordUnit[]>('/api/retrieve_gwt', JSON.stringify(body), httpOptions)
+    if (typeof this.url === 'string') {
+      body.url = this.url;
+    } else {
+      body.url = this.url.url;
+      body.relatedPageId = this.url.id;
+    }
+    this.http.post<KeywordUnit[]>('/api/retrieve_gwt', JSON.stringify(body), HttpHeader.JSON_HEADER)
       .subscribe(
         res => {
           res.forEach(keyword => this.keywordsData.push(keyword));

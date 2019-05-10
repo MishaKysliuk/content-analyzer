@@ -60,6 +60,7 @@ def fill_keywords_count(keywords, content):
 
     service.close_searcher()
 
+
 def count_words(content):
     result = 0
     analyzer = StandardAnalyzer()

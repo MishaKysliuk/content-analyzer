@@ -4,9 +4,9 @@
       <div class="input-container">
         <mat-form-field class="url-input">
           <input type="text" placeholder="URL" aria-label="URL" matInput
-                 [formControl]="myControl" [matAutocomplete]="auto" [(ngModel)]="url">
-          <mat-autocomplete #auto="matAutocomplete">
-            <mat-option *ngFor="let savedUrl of filteredUrls | async" [value]="savedUrl.url">
+                 [formControl]="urlControl" [matAutocomplete]="auto" [(ngModel)]="url">
+          <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayUrl">
+            <mat-option *ngFor="let savedUrl of filteredUrls | async" [value]="savedUrl">
               {{savedUrl.url}}
             </mat-option>
           </mat-autocomplete>
@@ -15,6 +15,7 @@
       <div class="buttons-container">
         <button type="button" class="btn btn-primary header-btn" (click)="processUrl()">Go</button>
         <button type="button" class="btn btn-primary header-btn" (click)="saveUrl()">Save</button>
+        <button type="button" [disabled]="!isUrlPageExists()" class="btn btn-primary header-btn" (click)="openDeleteDialog()">Delete</button>
       </div>
     </div>
   </div>

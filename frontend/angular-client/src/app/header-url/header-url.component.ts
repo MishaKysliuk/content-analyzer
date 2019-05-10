@@ -5,10 +5,13 @@ import {ContentService} from '../content.service';
 import {KeywordUnit} from '../gwt-table/keywordUnit';
 import {ContentUnit} from '../content-table/contentUnit';
 import {FormControl} from '@angular/forms';
-import {Observable, of} from 'rxjs';
+import {Observable} from 'rxjs';
 import {map, startWith} from 'rxjs/operators';
 import {SavedUrl} from './savedUrl';
 import {ToastrService} from 'ngx-toastr';
+import {DialogComponent} from './dialog/dialog.component';
+import {MatDialog} from '@angular/material';
+import {HttpHeader} from '../http.interceptor';
 
 @Component({
   selector: 'app-header-url',
@@ -17,15 +20,16 @@ import {ToastrService} from 'ngx-toastr';
 })
 export class HeaderUrlComponent implements OnInit, OnDestroy {
 
-  myControl = new FormControl();
-  public url = '';
+  urlControl = new FormControl();
+  public url: SavedUrl | string = '';
   keywordsData: KeywordUnit[];
   content: ContentUnit[];
   savedUrls: SavedUrl[] = [];
   filteredUrls: Observable<SavedUrl[]>;
 
   constructor(private urlService: UrlService, private http: HttpClient, private contentService: ContentService,
-              @Inject(Injector) private readonly injector: Injector) { }
+              @Inject(Injector) private readonly injector: Injector, public dialog: MatDialog) {
+  }
 
   ngOnInit() {
     this.contentService.content.subscribe((content: ContentUnit[]) => {
@@ -36,13 +40,13 @@ export class HeaderUrlComponent implements OnInit, OnDestroy {
     });
 
     this.fetchSavedUrls(() => {
-      this.filteredUrls = this.myControl.valueChanges
+      this.filteredUrls = this.urlControl.valueChanges
         .pipe(
-          startWith(''),
-          map(value => this._filter(value))
+          startWith<string | SavedUrl>(''),
+          map(value => typeof value === 'string' ? value : value.url),
+          map(name => name ? this._filter(name) : this.savedUrls.slice())
         );
     });
-    // this.filteredUrls = of(this.savedUrls);
   }
 
   private _filter(value: string): SavedUrl[] {
@@ -56,6 +60,10 @@ export class HeaderUrlComponent implements OnInit, OnDestroy {
     this.contentService.content.unsubscribe();
   }
 
+  displayUrl(savedUrl?: SavedUrl) {
+    return savedUrl ? typeof savedUrl === 'string' ? savedUrl : savedUrl.url : undefined;
+  }
+
   processUrl() {
     this.addUrlTrailingSlash();
     this.urlService.urlToRetrieveContent.next(this.url);
@@ -65,7 +73,43 @@ export class HeaderUrlComponent implements OnInit, OnDestroy {
     if (this.content.length < 1) {
       throw new Error('Content must not be empty!');
     }
-    this.addUrlTrailingSlash();
+
+    const body = this.prepareSaveRequestBody();
+    if (typeof this.url === 'string') {
+      this.addUrlTrailingSlash();
+      body.url = this.url;
+      this.performSaveUrlRequest(body, 'Saved successfully!');
+    } else {
+      this.openOverwriteDialog(body);
+    }
+  }
+
+  openOverwriteDialog(requestBody: any): void {
+    const dialogRef = this.dialog.open(DialogComponent, {
+      data: {
+        title: 'Overwrite',
+        question: 'Do you want to overwrite saved page?'
+      }
+    });
+    requestBody.url = (this.url as SavedUrl).url;
+    requestBody.pageIdToOverwrite = (this.url as SavedUrl).id;
+    dialogRef.afterClosed().subscribe(successAction => {
+      if (successAction) {
+        this.performSaveUrlRequest(requestBody, 'Overwritten successfully!');
+      }
+    });
+  }
+
+  performSaveUrlRequest(body: any, successMessage: string) {
+    this.http.post('/api/save_url', JSON.stringify(body), HttpHeader.JSON_HEADER)
+      .subscribe(
+        ignored => {
+          this.fetchSavedUrls();
+          this.toastrService.success(successMessage);
+        });
+  }
+
+  prepareSaveRequestBody(): any {
     const parsedTags = [];
     this.content.forEach(unit => parsedTags.push({
       tag: unit.insideTag,
@@ -74,41 +118,24 @@ export class HeaderUrlComponent implements OnInit, OnDestroy {
     const targetKeywords = [];
     this.keywordsData.filter(keyword => keyword.isTarget).forEach(keyword => {
       targetKeywords.push({
-        keyword: keyword.keyword
+        keyword: keyword.keyword.toLowerCase()
       });
     });
     const ignoredKeywords = [];
     this.keywordsData.filter(keyword => keyword.isIgnored).forEach(keyword => {
       ignoredKeywords.push({
-        keyword: keyword.keyword
+        keyword: keyword.keyword.toLowerCase()
       });
     });
-    const body = {
-      url: this.url,
+    return {
       ignored: ignoredKeywords,
       target: targetKeywords,
       content: parsedTags
     };
-    const httpOptions = {
-      headers: new HttpHeaders({
-        'Content-Type': 'application/json'
-      })
-    };
-    this.http.post('/api/save_url', JSON.stringify(body), httpOptions)
-      .subscribe(
-          ignored => {
-            this.fetchSavedUrls();
-            this.toastrService.success('Saved successfully!');
-          });
   }
 
   fetchSavedUrls(callback?) {
-    const httpOptions = {
-      headers: new HttpHeaders({
-        'Content-Type': 'application/json'
-      })
-    };
-    this.http.get<SavedUrl[]>('/api/retrieve_urls', httpOptions)
+    this.http.get<SavedUrl[]>('/api/retrieve_urls', HttpHeader.JSON_HEADER)
       .subscribe(
         res => {
           this.savedUrls.splice(0, this.savedUrls.length);
@@ -121,9 +148,38 @@ export class HeaderUrlComponent implements OnInit, OnDestroy {
   }
 
   addUrlTrailingSlash() {
-    if (this.url.charAt(this.url.length - 1) !== '/') {
+    if (typeof this.url === 'string' && this.url.charAt(this.url.length - 1) !== '/') {
       this.url += '/';
     }
+  }
+
+  openDeleteDialog(): void {
+    const dialogRef = this.dialog.open(DialogComponent, {
+      data: {
+        title: 'Delete',
+        question: 'Do you want to delete saved page?'
+      }
+    });
+
+    dialogRef.afterClosed().subscribe(successAction => {
+      if (successAction) {
+        this.deleteSavedPage();
+      }
+    });
+  }
+
+  deleteSavedPage() {
+    this.http.delete('/api/delete_saved_page?id=' + (this.url as SavedUrl).id, HttpHeader.JSON_HEADER)
+      .subscribe(
+        res => {
+          this.toastrService.success('Page successfully deleted!');
+          this.fetchSavedUrls(() => this.url = (this.url as SavedUrl).url);
+        }
+      );
+  }
+
+  isUrlPageExists(): boolean {
+    return this.url && typeof this.url !== 'string';
   }
 
   private get toastrService(): ToastrService {

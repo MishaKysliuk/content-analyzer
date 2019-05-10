@@ -5,6 +5,7 @@ import {ContentUnit} from '../content-table/contentUnit';
 import {KeywordUnit} from '../gwt-table/keywordUnit';
 import {HttpClient, HttpHeaders} from '@angular/common/http';
 import {ServerResponse} from './serverResponse';
+import {HttpHeader} from "../http.interceptor";
 
 @Component({
   selector: 'app-phrase-analysis',
@@ -61,12 +62,7 @@ export class PhraseAnalysisComponent implements OnInit, OnDestroy {
       keywords: targetKeywords,
       content: parsedTags
     };
-    const httpOptions = {
-      headers: new HttpHeaders({
-        'Content-Type': 'application/json'
-      })
-    };
-    this.http.post<ServerResponse>('/api/retrieve_analysis', JSON.stringify(body), httpOptions)
+    this.http.post<ServerResponse>('/api/retrieve_analysis', JSON.stringify(body), HttpHeader.JSON_HEADER)
       .subscribe(
         res => {
           this.wordsCount = res.wordsCount;

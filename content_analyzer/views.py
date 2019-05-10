@@ -27,14 +27,34 @@ def retrieve_content(request):
 def retrieve_gwt(request):
     body = json.loads(request.body.decode(request.POST.encoding))
     root_url, gwt_request = build_request(body)
+    related_page_id = body['relatedPageId']
     webmaster_api = WebmasterService()
     try:
         res = webmaster_api.execute_request(root_url, gwt_request)
         keywords = map_keywords(res.get('rows', []))
         fill_keywords_count(keywords, body['content'])
+        if related_page_id:
+            mark_keywords(keywords, related_page_id)
     except Exception as e:
         return JsonResponse({'message': str(e)}, status=500)
     return JsonResponse(keywords, safe=False)
+
+
+def mark_keywords(keywords, page_id):
+    page = SavedPage.objects.get(pk=page_id)
+    ignored_keywords = set()
+    target_keywords = set()
+    for ignored_keyword in IgnoredKeyword.objects.filter(related_page=page):
+        ignored_keywords.add(ignored_keyword.keyword)
+    for target_keyword in TargetKeyword.objects.filter(related_page=page):
+        target_keywords.add(target_keyword.keyword)
+
+    for keyword in keywords:
+        if keyword.get('keyword') in target_keywords:
+            keyword['isTarget'] = True
+        elif keyword.get('keyword') in ignored_keywords:
+            keyword['isIgnored'] = True
+
 
 def retrieve_phrases_analysis(request):
     result = {
@@ -79,6 +99,7 @@ def retrieve_phrases_analysis(request):
         return JsonResponse({'message': str(e)}, status=500)
     return JsonResponse(result, safe=False)
 
+
 def map_keywords(rows):
     result = []
     for keyword in rows:
@@ -94,13 +115,18 @@ def map_keywords(rows):
         })
     return result
 
+
 def save_url(request):
     body = json.loads(request.body.decode(request.POST.encoding))
     url = body['url']
     content = body.get('content')
     target_keywords = body.get('target')
     ignored_keywords = body.get('ignored')
+    overwrite_page_id = body.get('pageIdToOverwrite')
     try:
+        if overwrite_page_id:
+            SavedPage.objects.get(pk=overwrite_page_id).delete()
+
         page = SavedPage(url=url)
         page.save()
         if content:
@@ -116,7 +142,7 @@ def save_url(request):
                 target_to_save = TargetKeyword(keyword=target_unit['keyword'], related_page=page)
                 target_to_save.save()
     except Exception as e:
-        return JsonResponse({'message': str(e)}, status=500)
+        return JsonResponse({'message': '%s: %s' % ('Could not save page', str(e))}, status=500)
     return HttpResponse('')
 
 
@@ -131,3 +157,46 @@ def retrieve_saved_urls(request):
     except Exception as e:
         return JsonResponse({'message': str(e)}, status=500)
     return JsonResponse(saved_urls, safe=False)
+
+
+def retrieve_content_by_page(request):
+    page_id = request.GET.get('id')
+    result = []
+    try:
+        page = SavedPage.objects.get(pk=page_id)
+        for content_unit in ContentUnit.objects.filter(related_page=page):
+            result.append({
+                'tag': content_unit.tag,
+                'text': content_unit.text
+            })
+
+    except Exception as e:
+        return JsonResponse({'message': str(e)}, status=500)
+    return JsonResponse(result, safe=False)
+
+
+def retrieve_keywords_by_page(request):
+    page_id = request.GET.get('id')
+    result = {}
+    try:
+        page = SavedPage.objects.get(pk=page_id)
+        ignored_keywords = []
+        for ignored_keyword in IgnoredKeyword.objects.filter(related_page=page):
+            ignored_keywords.append(ignored_keyword.keyword)
+        target_keywords = []
+        for target_keyword in TargetKeyword.objects.filter(related_page=page):
+            target_keywords.append(target_keyword.keyword)
+        result['ignored'] = ignored_keywords
+        result['target'] = target_keywords
+    except Exception as e:
+        return JsonResponse({'message': str(e)}, status=500)
+    return JsonResponse(result, safe=False)
+
+
+def delete_saved_page(request):
+    page_id = request.GET.get('id')
+    try:
+        SavedPage.objects.get(pk=page_id).delete()
+    except Exception as e:
+        return JsonResponse({'message': '%s: %s' % ('Could not delete saved page', str(e))}, status=500)
+    return HttpResponse('')

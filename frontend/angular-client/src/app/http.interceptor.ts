@@ -3,13 +3,21 @@ import { Injectable } from '@angular/core';
 import {
   HttpErrorResponse,
   HttpEvent,
-  HttpHandler,
+  HttpHandler, HttpHeaders,
   HttpInterceptor,
   HttpRequest
 } from '@angular/common/http';
 
 import {Observable, BehaviorSubject} from 'rxjs';
 import {catchError, finalize, map} from 'rxjs/operators';
+
+export class HttpHeader {
+  static JSON_HEADER = {
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json'
+      })
+    };
+}
 
 @Injectable()
 export class HTTPStatus {

@@ -23,13 +23,14 @@ import {
   MatDatepickerModule,
   MatSlideToggleModule,
   MatNativeDateModule,
-  MatButtonModule, MatAutocompleteModule
+  MatButtonModule, MatAutocompleteModule, MatDialogModule
 } from '@angular/material';
 import { KeywordsTableComponent } from './ignored-keywords/keywords-table/keywords-table.component';
 import { GwtTableComponent } from './gwt-table/gwt-table.component';
 import {ContentService} from './content.service';
 import { PhraseAnalysisComponent } from './phrase-analysis/phrase-analysis.component';
 import { AnalysisTableComponent } from './phrase-analysis/analysis-table/analysis-table.component';
+import { DialogComponent } from './header-url/dialog/dialog.component';
 
 @NgModule({
   declarations: [
@@ -40,7 +41,8 @@ import { AnalysisTableComponent } from './phrase-analysis/analysis-table/analysi
     KeywordsTableComponent,
     GwtTableComponent,
     PhraseAnalysisComponent,
-    AnalysisTableComponent
+    AnalysisTableComponent,
+    DialogComponent
   ],
   imports: [
     BrowserModule,
@@ -64,7 +66,8 @@ import { AnalysisTableComponent } from './phrase-analysis/analysis-table/analysi
     MatNativeDateModule,
     MatButtonModule,
     ReactiveFormsModule,
-    MatAutocompleteModule
+    MatAutocompleteModule,
+    MatDialogModule
   ],
   providers: [
     UrlService,
@@ -80,7 +83,8 @@ import { AnalysisTableComponent } from './phrase-analysis/analysis-table/analysi
       useClass: GlobalErrorHandler
     }
   ],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
+  entryComponents: [DialogComponent]
 })
 export class AppModule {
 }
