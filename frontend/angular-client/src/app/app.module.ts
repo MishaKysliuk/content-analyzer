@@ -12,7 +12,6 @@ import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {ToastrModule} from 'ngx-toastr';
 import {GlobalErrorHandler} from './global-error-handler';
 import {HTTPListener, HTTPStatus} from './http.interceptor';
-import {IgnoredKeywordsComponent} from './ignored-keywords/ignored-keywords.component';
 import {
   MatInputModule,
   MatPaginatorModule,
@@ -25,7 +24,6 @@ import {
   MatNativeDateModule,
   MatButtonModule, MatAutocompleteModule, MatDialogModule
 } from '@angular/material';
-import { KeywordsTableComponent } from './ignored-keywords/keywords-table/keywords-table.component';
 import { GwtTableComponent } from './gwt-table/gwt-table.component';
 import {ContentService} from './content.service';
 import { PhraseAnalysisComponent } from './phrase-analysis/phrase-analysis.component';
@@ -37,8 +35,6 @@ import { DialogComponent } from './header-url/dialog/dialog.component';
     AppComponent,
     HeaderUrlComponent,
     ContentTableComponent,
-    IgnoredKeywordsComponent,
-    KeywordsTableComponent,
     GwtTableComponent,
     PhraseAnalysisComponent,
     AnalysisTableComponent,

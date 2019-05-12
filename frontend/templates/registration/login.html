@@ -1,0 +1,73 @@
+<!--<h2>Login</h2>-->
+<!--<form method="post">-->
+<!--{% csrf_token %}-->
+<!--{{ form.as_p }}-->
+<!--<button type="submit">Login</button>-->
+<!--</form>-->
+
+
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>Content Analyzer</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+          integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <style>
+        .container {
+            width: 20%;
+            margin: 10px auto;
+        }
+
+        .error-container {
+            color: red;
+            margin: 10px auto;
+        }
+
+        .login-title {
+            text-align: center;
+            margin: 10px auto;
+        }
+
+        .login-btn {
+            margin: 10px auto;
+            display: inline-block;
+        }
+    </style>
+</head>
+
+<body>
+<div class="container">
+    <h2 class="login-title">Login</h2>
+    {% if form.errors %}
+    <div class="error-container">
+        <p>Your username and password didn't match. Please try again.</p>
+    </div>
+    {% endif %}
+
+    <form class="form" method="post" action="{% url 'login' %}">
+        {% csrf_token %}
+        <div class="input-group input-group-sm mb-3">
+            <div class="input-group-prepend">
+                <span class="input-group-text">Username</span>
+            </div>
+            <input required type="text" class="form-control" id="{{ form.username.id_for_label }}"
+                   name="{{ form.username.html_name }}">
+        </div>
+        <div class="input-group input-group-sm mb-3">
+            <div class="input-group-prepend">
+                <span class="input-group-text">Password&nbsp;</span>
+            </div>
+            <input required type="password" class="form-control" id="{{ form.password.id_for_label }}"
+                   name="{{ form.password.html_name }}">
+        </div>
+        <input class="btn btn-primary login-btn" type="submit" value="Login">
+    </form>
+
+</div>
+
+</body>
+
+</html>

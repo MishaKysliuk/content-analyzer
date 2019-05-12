@@ -1,22 +1,24 @@
+<div class="logout-panel">
+  <a href="./accounts/logout" class="btn btn-primary header-btn">Logout</a>
+</div>
 <div class="container">
-  <div class="row">
-    <div class="header-row">
-      <div class="input-container">
-        <mat-form-field class="url-input">
-          <input type="text" placeholder="URL" aria-label="URL" matInput
-                 [formControl]="urlControl" [matAutocomplete]="auto" [(ngModel)]="url">
-          <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayUrl">
-            <mat-option *ngFor="let savedUrl of filteredUrls | async" [value]="savedUrl">
-              {{savedUrl.url}}
-            </mat-option>
-          </mat-autocomplete>
-        </mat-form-field>
-      </div>
-      <div class="buttons-container">
-        <button type="button" class="btn btn-primary header-btn" (click)="processUrl()">Go</button>
-        <button type="button" class="btn btn-primary header-btn" (click)="saveUrl()">Save</button>
-        <button type="button" [disabled]="!isUrlPageExists()" class="btn btn-primary header-btn" (click)="openDeleteDialog()">Delete</button>
-      </div>
+  <div class="header-row">
+    <div class="input-container">
+      <mat-form-field class="url-input">
+        <input type="text" placeholder="URL" aria-label="URL" matInput
+               [formControl]="urlControl" [matAutocomplete]="auto" [(ngModel)]="url">
+        <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayUrl">
+          <mat-option *ngFor="let savedUrl of filteredUrls | async" [value]="savedUrl">
+            {{savedUrl.url}}
+          </mat-option>
+        </mat-autocomplete>
+      </mat-form-field>
+    </div>
+    <div class="buttons-container">
+      <button type="button" class="btn btn-primary header-btn" (click)="processUrl()">Go</button>
+      <button type="button" class="btn btn-primary header-btn" (click)="saveUrl()">Save</button>
+      <button type="button" [disabled]="!isUrlPageExists()" class="btn btn-primary header-btn"
+              (click)="openDeleteDialog()">Delete</button>
     </div>
   </div>
 </div>

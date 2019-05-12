@@ -49,6 +49,8 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'django.contrib.sessions.middleware.SessionMiddleware',
+    'django_session_timeout.middleware.SessionTimeoutMiddleware'
 ]
 
 ROOT_URLCONF = 'content_analyzer.urls'
@@ -56,7 +58,7 @@ ROOT_URLCONF = 'content_analyzer.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [os.path.join(BASE_DIR, 'templates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -71,7 +73,9 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'content_analyzer.wsgi.application'
 
-
+LOGIN_REDIRECT_URL = '/'
+LOGOUT_REDIRECT_URL = '/'
+SESSION_EXPIRE_SECONDS = 7200  # 7200 seconds = 2 hours
 # Database
 # https://docs.djangoproject.com/en/2.1/ref/settings/#databases
 

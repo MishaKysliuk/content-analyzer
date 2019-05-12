@@ -1,7 +1,13 @@
 import json
 
+from django.contrib.auth.decorators import login_required
 from django.shortcuts import render
-from django.http import JsonResponse, HttpResponse
+from django.http import JsonResponse, HttpResponse, HttpResponseForbidden
+from django.utils.decorators import available_attrs
+from django.utils.six import wraps
+from django.views.decorators.http import require_http_methods
+from rest_framework.decorators import permission_classes
+from rest_framework.permissions import IsAuthenticated
 
 from content_analyzer.gwt_request_builder import build_request
 from content_analyzer.intext_counter import fill_keywords_count, InTextCounterService, count_words
@@ -11,10 +17,23 @@ from content_analyzer.web_content_parser import WebPageParser
 from content_analyzer.webmaster_api import WebmasterService
 
 
-def index(request):
-    return render(request, 'index.html')
+def backend_login_required(function=None):
+    def decorator(view_func):
+        def _wrapped_view(request, *args, **kwargs):
+            if request.user.is_authenticated:
+                return view_func(request, *args, **kwargs)
+            else:
+                return HttpResponseForbidden()
+
+        return wraps(view_func, assigned=available_attrs(view_func))(_wrapped_view)
+    if function is None:
+        return decorator
+    else:
+        return decorator(function)
 
 
+@backend_login_required
+@require_http_methods(["GET"])
 def retrieve_content(request):
     try:
         parser = WebPageParser(request.GET.get('parse'))
@@ -24,6 +43,8 @@ def retrieve_content(request):
     return JsonResponse([text.__dict__ for text in data], safe=False)
 
 
+@backend_login_required
+@require_http_methods(["POST"])
 def retrieve_gwt(request):
     body = json.loads(request.body.decode(request.POST.encoding))
     root_url, gwt_request = build_request(body)
@@ -56,6 +77,8 @@ def mark_keywords(keywords, page_id):
             keyword['isIgnored'] = True
 
 
+@backend_login_required
+@require_http_methods(["POST"])
 def retrieve_phrases_analysis(request):
     result = {
         'wordsCount': 0,
@@ -116,6 +139,8 @@ def map_keywords(rows):
     return result
 
 
+@backend_login_required
+@require_http_methods(["POST"])
 def save_url(request):
     body = json.loads(request.body.decode(request.POST.encoding))
     url = body['url']
@@ -146,6 +171,8 @@ def save_url(request):
     return HttpResponse('')
 
 
+@backend_login_required
+@require_http_methods(["GET"])
 def retrieve_saved_urls(request):
     saved_urls = []
     try:
@@ -159,6 +186,8 @@ def retrieve_saved_urls(request):
     return JsonResponse(saved_urls, safe=False)
 
 
+@backend_login_required
+@require_http_methods(["GET"])
 def retrieve_content_by_page(request):
     page_id = request.GET.get('id')
     result = []
@@ -175,6 +204,8 @@ def retrieve_content_by_page(request):
     return JsonResponse(result, safe=False)
 
 
+@backend_login_required
+@require_http_methods(["GET"])
 def retrieve_keywords_by_page(request):
     page_id = request.GET.get('id')
     result = {}
@@ -193,6 +224,8 @@ def retrieve_keywords_by_page(request):
     return JsonResponse(result, safe=False)
 
 
+@backend_login_required
+@require_http_methods(["DELETE"])
 def delete_saved_page(request):
     page_id = request.GET.get('id')
     try:

@@ -1,3 +1,9 @@
+.logout-panel {
+  display: flex;
+  justify-content: flex-end;
+  margin: 3px 10px;
+}
+
 
 .header-row{
   margin: 30px auto;
