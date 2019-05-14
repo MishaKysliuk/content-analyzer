@@ -48,7 +48,7 @@ def retrieve_content(request):
 def retrieve_gwt(request):
     body = json.loads(request.body.decode(request.POST.encoding))
     root_url, gwt_request = build_request(body)
-    related_page_id = body['relatedPageId']
+    related_page_id = body.get('relatedPageId')
     webmaster_api = WebmasterService()
     try:
         res = webmaster_api.execute_request(root_url, gwt_request)

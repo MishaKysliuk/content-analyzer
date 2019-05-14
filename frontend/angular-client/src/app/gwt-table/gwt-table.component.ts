@@ -27,6 +27,7 @@ export class GwtTableComponent implements OnInit, OnDestroy, AfterContentInit {
   dateTo: Date;
   selectedDevice: string;
   selectedCountry: string;
+  selectedShowType: string;
   url: SavedUrl | string;
   isGwtFetchEnabled: boolean;
 
@@ -49,6 +50,7 @@ export class GwtTableComponent implements OnInit, OnDestroy, AfterContentInit {
     this.countries = this.getCountriesForFilter();
     this.devices = this.getDevicesForFilter();
     this.showTypes = this.getShowTypesForFilter();
+    this.selectedShowType = 'ALL';
 
     this.urlService.urlToRetrieveContent.subscribe((url: string) => {
       this.url = url;
@@ -136,6 +138,17 @@ export class GwtTableComponent implements OnInit, OnDestroy, AfterContentInit {
     return formatDate(date, 'yyyy-MM-dd', 'en-US');
   }
 
+  showTypeChanged(event) {
+    if (this.selectedShowType === 'ALL') {
+      this.dataSource.data = this.keywordsData;
+    } else if (this.selectedShowType === 'TARGET') {
+      this.dataSource.data = this.keywordsData.filter(keyword => keyword.isTarget);
+    } else if (this.selectedShowType === 'IGNORED') {
+      this.dataSource.data = this.keywordsData.filter(keyword => keyword.isIgnored);
+    } else if (this.selectedShowType === 'UNDEFINED') {
+      this.dataSource.data = this.keywordsData.filter(keyword => !keyword.isIgnored && !keyword.isTarget);
+    }
+  }
 
   getCountriesForFilter(): SelectUnit[] {
     const countries: SelectUnit[] = [];

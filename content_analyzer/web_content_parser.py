@@ -1,6 +1,6 @@
 import requests
 import re
-from bs4 import BeautifulSoup, Tag, NavigableString
+from bs4 import BeautifulSoup, Tag, NavigableString, Comment
 
 
 class TextData:
@@ -40,7 +40,7 @@ class WebPageParser:
 
     def tag_contains_text(self, tag):
         for element in tag.contents:
-            if isinstance(element, NavigableString) and not re.match(r'^\s+$', element):
+            if type(element) is NavigableString and not re.match(r'^\s+$', element):
                 return True
         return False
 

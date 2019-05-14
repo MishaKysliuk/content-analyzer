@@ -48,7 +48,7 @@
         <div class="live-filter-container">
           <mat-form-field class="device-select">
             <mat-label>Show</mat-label>
-            <mat-select panelClass="select-panel">
+            <mat-select panelClass="select-panel" [(value)]="selectedShowType" (selectionChange)="showTypeChanged($event)">
               <mat-option *ngFor="let showType of showTypes" [value]="showType.value">{{showType.label}}</mat-option>
             </mat-select>
           </mat-form-field>
