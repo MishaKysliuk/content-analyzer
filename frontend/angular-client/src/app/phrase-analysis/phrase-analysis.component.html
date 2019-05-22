@@ -26,7 +26,7 @@
           </div>
           <div class="export-container">
               <button mat-raised-button color="primary" class="button" [disabled]="!isGapiInited || keywordsData.length == 0" (click)="exportData()">Export</button>
-              <button mat-raised-button color="primary" class="button" [disabled]="isGapiSignedIn" (click)="handleSignoutClick()">Google Logout</button>
+              <button mat-raised-button color="primary" class="button" [disabled]="!isGapiSignedIn" (click)="handleSignoutClick()">Google Logout</button>
           </div>
         </div>
 
