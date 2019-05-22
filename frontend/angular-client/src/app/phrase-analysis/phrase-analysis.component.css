@@ -1,5 +1,6 @@
-.fetch-button {
+.button {
   align-self: center;
+  margin-right: 10px;
 }
 
 .request-filter-container {
@@ -7,16 +8,37 @@
   display: flex;
 }
 
-.divider-select {
+.fetch-data-part {
   flex: 0 0 50%;
   display: flex;
   justify-content: flex-start;
 }
 
-.words-count {
-  flex: 0 0 50%;
+.divider-select {
+  flex: 0 0 40%;
   display: flex;
   justify-content: flex-start;
+}
+
+.fetch-button {
+  flex: 0 0 20%;
+  max-width: 30px;
+  align-self: center;
+  margin: 0 10px;
+}
+
+.words-count {
+  align-self: center;
+  flex-grow: 1;
+}
+
+.export-container {
+  flex: 0 0 50%;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.words-count {
   align-items: center;
 }
 

@@ -1,5 +1,6 @@
 import {ErrorHandler, Inject, Injectable, Injector} from '@angular/core';
 import {ToastrService} from 'ngx-toastr';
+import {HTTPStatus} from './http.interceptor';
 
 @Injectable()
 export class GlobalErrorHandler extends ErrorHandler {
@@ -10,6 +11,7 @@ export class GlobalErrorHandler extends ErrorHandler {
 
   handleError(error) {
     this.toastrService.error(error.message, 'Error', { onActivateTick: true });
+    this.httpStatus.setHttpStatus(false);
   }
 
   /**
@@ -17,6 +19,10 @@ export class GlobalErrorHandler extends ErrorHandler {
    */
   private get toastrService(): ToastrService {
     return this.injector.get(ToastrService);
+  }
+
+  private get httpStatus(): HTTPStatus {
+    return this.injector.get(HTTPStatus);
   }
 
 }

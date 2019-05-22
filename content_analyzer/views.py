@@ -1,13 +1,9 @@
 import json
 
-from django.contrib.auth.decorators import login_required
-from django.shortcuts import render
 from django.http import JsonResponse, HttpResponse, HttpResponseForbidden
 from django.utils.decorators import available_attrs
 from django.utils.six import wraps
 from django.views.decorators.http import require_http_methods
-from rest_framework.decorators import permission_classes
-from rest_framework.permissions import IsAuthenticated
 
 from content_analyzer.gwt_request_builder import build_request
 from content_analyzer.intext_counter import fill_keywords_count, InTextCounterService, count_words
