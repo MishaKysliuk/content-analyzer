@@ -8,6 +8,7 @@ import {FormControl} from '@angular/forms';
 import {Observable} from 'rxjs';
 import {map, startWith} from 'rxjs/operators';
 import {SavedUrl} from './savedUrl';
+import {Project} from './project';
 import {ToastrService} from 'ngx-toastr';
 import {DialogComponent} from './dialog/dialog.component';
 import {MatDialog} from '@angular/material';
@@ -26,6 +27,8 @@ export class HeaderUrlComponent implements OnInit, OnDestroy {
   content: ContentUnit[];
   savedUrls: SavedUrl[] = [];
   filteredUrls: Observable<SavedUrl[]>;
+  selectedProject: Project;
+  projects: Project[] = [];
 
   constructor(private urlService: UrlService, private http: HttpClient, private contentService: ContentService,
               @Inject(Injector) private readonly injector: Injector, public dialog: MatDialog) {
@@ -39,14 +42,8 @@ export class HeaderUrlComponent implements OnInit, OnDestroy {
       this.keywordsData = keywordsData;
     });
 
-    this.fetchSavedUrls(() => {
-      this.filteredUrls = this.urlControl.valueChanges
-        .pipe(
-          startWith<string | SavedUrl>(''),
-          map(value => typeof value === 'string' ? value : value.url),
-          map(name => name ? this._filter(name) : this.savedUrls.slice())
-        );
-    });
+    this.fetchProjects();
+    //this.initializeAutocomplete();
   }
 
   private _filter(value: string): SavedUrl[] {
@@ -72,6 +69,9 @@ export class HeaderUrlComponent implements OnInit, OnDestroy {
   saveUrl() {
     if (this.content.length < 1) {
       throw new Error('Content must not be empty!');
+    }
+    if (!this.selectedProject) {
+      throw new Error('Project has to be selected!');
     }
 
     const body = this.prepareSaveRequestBody();
@@ -130,16 +130,33 @@ export class HeaderUrlComponent implements OnInit, OnDestroy {
     return {
       ignored: ignoredKeywords,
       target: targetKeywords,
-      content: parsedTags
+      content: parsedTags,
+      relatedProjectId: this.selectedProject.id
     };
   }
 
+  fetchProjects() {
+    this.http.get<Project[]>('/api/retrieve_projects', HttpHeader.JSON_HEADER)
+      .subscribe(
+        res => {
+          this.projects = [];
+          res.forEach(project => this.projects.push(project));
+          this.selectedProject = this.projects.find(project => project.default);
+          if (this.selectedProject) {
+            this.fetchSavedUrls(() => this.initializeAutocomplete());
+          }
+        }
+      );
+  }
+
   fetchSavedUrls(callback?) {
-    this.http.get<SavedUrl[]>('/api/retrieve_urls', HttpHeader.JSON_HEADER)
+    const projectId = this.selectedProject.id;
+    this.http.get<SavedUrl[]>(`/api/retrieve_urls?projectId=${projectId}`, HttpHeader.JSON_HEADER)
       .subscribe(
         res => {
           this.savedUrls.splice(0, this.savedUrls.length);
           res.forEach(savedUrl => this.savedUrls.push(savedUrl));
+          console.log(this.savedUrls);
           if (callback) {
             callback();
           }
@@ -147,10 +164,24 @@ export class HeaderUrlComponent implements OnInit, OnDestroy {
       );
   }
 
+  initializeAutocomplete() {
+    this.filteredUrls = this.urlControl.valueChanges
+      .pipe(
+        startWith<string | SavedUrl>(''),
+        map(value => typeof value === 'string' ? value : value.url),
+        map(name => name ? this._filter(name) : this.savedUrls.slice())
+      );
+  }
+
   addUrlTrailingSlash() {
     if (typeof this.url === 'string' && this.url.charAt(this.url.length - 1) !== '/') {
       this.url += '/';
     }
+  }
+
+  onProjectSelect() {
+    this.url = '';
+    this.fetchSavedUrls(() => this.initializeAutocomplete());
   }
 
   openDeleteDialog(): void {

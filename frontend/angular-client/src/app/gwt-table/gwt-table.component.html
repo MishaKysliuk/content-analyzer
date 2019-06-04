@@ -16,13 +16,13 @@
         <div class="request-filter-container">
           <mat-form-field class="country-select">
             <mat-label>Country</mat-label>
-            <mat-select [(value)]="selectedCountry" panelClass="select-panel">
+            <mat-select [(value)]="selectedCountry" [disableOptionCentering]="true">
               <mat-option *ngFor="let country of countries" [value]="country.value">{{country.label}}</mat-option>
             </mat-select>
           </mat-form-field>
           <mat-form-field class="device-select">
             <mat-label>Device</mat-label>
-            <mat-select [(value)]="selectedDevice" panelClass="select-panel">
+            <mat-select [(value)]="selectedDevice" [disableOptionCentering]="true">
               <mat-option *ngFor="let device of devices" [value]="device.value">{{device.label}}</mat-option>
             </mat-select>
           </mat-form-field>
@@ -48,7 +48,7 @@
         <div class="live-filter-container">
           <mat-form-field class="device-select">
             <mat-label>Show</mat-label>
-            <mat-select panelClass="select-panel" [(value)]="selectedShowType" (selectionChange)="showTypeChanged($event)">
+            <mat-select [(value)]="selectedShowType" (selectionChange)="showTypeChanged($event)" [disableOptionCentering]="true">
               <mat-option *ngFor="let showType of showTypes" [value]="showType.value">{{showType.label}}</mat-option>
             </mat-select>
           </mat-form-field>

@@ -24,6 +24,7 @@ urlpatterns = [
     path('api/retrieve_gwt', views.retrieve_gwt),
     path('api/retrieve_analysis', views.retrieve_phrases_analysis),
     path('api/save_url', views.save_url),
+    path('api/retrieve_projects', views.retrieve_projects),
     path('api/retrieve_urls', views.retrieve_saved_urls),
     path('api/retrieve_saved_content', views.retrieve_content_by_page),
     path('api/retrieve_saved_keywords', views.retrieve_keywords_by_page),

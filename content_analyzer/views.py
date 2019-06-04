@@ -7,7 +7,7 @@ from django.views.decorators.http import require_http_methods
 
 from content_analyzer.gwt_request_builder import build_request
 from content_analyzer.intext_counter import fill_keywords_count, InTextCounterService, count_words
-from content_analyzer.models import SavedPage, ContentUnit, TargetKeyword, IgnoredKeyword
+from content_analyzer.models import SavedPage, ContentUnit, TargetKeyword, IgnoredKeyword, Project
 from content_analyzer.phrase_counter import PhraseCounterService, form_same_count_keywords
 from content_analyzer.web_content_parser import WebPageParser
 from content_analyzer.webmaster_api import WebmasterService
@@ -144,11 +144,12 @@ def save_url(request):
     target_keywords = body.get('target')
     ignored_keywords = body.get('ignored')
     overwrite_page_id = body.get('pageIdToOverwrite')
+    related_project = Project.objects.get(pk=body.get('relatedProjectId'))
     try:
         if overwrite_page_id:
             SavedPage.objects.get(pk=overwrite_page_id).delete()
 
-        page = SavedPage(url=url)
+        page = SavedPage(url=url, related_project=related_project)
         page.save()
         if content:
             for content_unit in content:
@@ -169,13 +170,39 @@ def save_url(request):
 
 @backend_login_required
 @require_http_methods(["GET"])
+def retrieve_projects(request):
+    projects = []
+    try:
+        for project in Project.objects.all():
+            if (request.user.is_superuser or user_has_access_to_project(request.user, project.groups_have_access)):
+                projects.append({
+                    'id': project.id,
+                    'name': project.name,
+                    'default': project.default
+                })
+    except Exception as e:
+        return JsonResponse({'message': str(e)}, status=500)
+    return JsonResponse(projects, safe=False)
+
+
+def user_has_access_to_project(user, project_groups):
+    for user_group in user.groups.all():
+        if user_group in project_groups.all():
+            return True
+    return False
+
+
+@backend_login_required
+@require_http_methods(["GET"])
 def retrieve_saved_urls(request):
+    project_id = request.GET.get('projectId')
+    project = Project.objects.get(pk=project_id)
     saved_urls = []
     try:
-        for saved_url in SavedPage.objects.values():
+        for saved_url in SavedPage.objects.filter(related_project=project):
             saved_urls.append({
-                'id': saved_url.get('id'),
-                'url': saved_url.get('url')
+                'id': saved_url.id,
+                'url': saved_url.url
             })
     except Exception as e:
         return JsonResponse({'message': str(e)}, status=500)

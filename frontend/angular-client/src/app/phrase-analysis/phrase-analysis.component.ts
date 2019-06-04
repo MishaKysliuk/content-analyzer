@@ -53,7 +53,7 @@ export class PhraseAnalysisComponent implements OnInit, OnDestroy, AfterViewInit
   }
 
   ngAfterViewInit() {
-    setTimeout(() => this.initClient(), 1000);
+    setTimeout(() => this.initClient(), 2000);
   }
 
   fetchAnalyzedData() {

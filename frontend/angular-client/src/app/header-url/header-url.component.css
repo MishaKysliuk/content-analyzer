@@ -6,27 +6,32 @@
 
 
 .header-row{
-  margin: 30px auto;
+  margin: 0 auto;
   display: flex;
   justify-content: space-between;
-  flex: 0 0 60%;
+  width: 100%;
 }
 .input-container {
-  flex: 0 0 70%;
+  flex: 0 0 77%;
   display: flex;
-  justify-content: center;
+  justify-content: space-between;
 }
 
 .buttons-container {
   display: flex;
-  flex: 0 0 30%;
+  flex: 0 0 20%;
   justify-content: flex-start;
   align-items: center;
 }
 
 .url-input {
   margin: 0 auto;
-  width: 90%;
+  width: 66%;
+}
+
+.project-select {
+  margin: 0 auto;
+  width: 30%;
 }
 
 .header-btn {

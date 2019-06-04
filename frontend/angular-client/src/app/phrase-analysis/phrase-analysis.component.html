@@ -17,7 +17,7 @@
           <div class="fetch-data-part">
             <mat-form-field class="divider-select">
               <mat-label>Divider</mat-label>
-              <mat-select [(value)]="selectedDivider" panelClass="select-panel">
+              <mat-select [(value)]="selectedDivider" [disableOptionCentering]="true">
                 <mat-option *ngFor="let divider of dividers" [value]="divider">{{divider}}</mat-option>
               </mat-select>
             </mat-form-field>

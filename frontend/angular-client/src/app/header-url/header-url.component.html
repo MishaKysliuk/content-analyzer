@@ -4,6 +4,12 @@
 <div class="container">
   <div class="header-row">
     <div class="input-container">
+      <mat-form-field class="project-select">
+        <mat-label>Project</mat-label>
+        <mat-select [(value)]="selectedProject" (selectionChange)="onProjectSelect()" [disableOptionCentering]="true">
+          <mat-option [value]="project" *ngFor="let project of projects">{{project.name}}</mat-option>
+        </mat-select>
+      </mat-form-field>
       <mat-form-field class="url-input">
         <input type="text" placeholder="URL" aria-label="URL" matInput
                [formControl]="urlControl" [matAutocomplete]="auto" [(ngModel)]="url">
@@ -18,7 +24,8 @@
       <button type="button" class="btn btn-primary header-btn" (click)="processUrl()">Go</button>
       <button type="button" class="btn btn-primary header-btn" (click)="saveUrl()">Save</button>
       <button type="button" [disabled]="!isUrlPageExists()" class="btn btn-primary header-btn"
-              (click)="openDeleteDialog()">Delete</button>
+              (click)="openDeleteDialog()">Delete
+      </button>
     </div>
   </div>
 </div>
