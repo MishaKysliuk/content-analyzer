@@ -156,7 +156,6 @@ export class HeaderUrlComponent implements OnInit, OnDestroy {
         res => {
           this.savedUrls.splice(0, this.savedUrls.length);
           res.forEach(savedUrl => this.savedUrls.push(savedUrl));
-          console.log(this.savedUrls);
           if (callback) {
             callback();
           }

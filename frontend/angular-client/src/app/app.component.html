@@ -1,12 +1,22 @@
-<app-header-url></app-header-url>
-<app-content-table></app-content-table>
-<app-gwt-table></app-gwt-table>
-<app-phrase-analysis></app-phrase-analysis>
+<div class="top-panel">
+  <a href="/indexing" *ngIf="!indexing">Indexing</a>
+  <a href="/" *ngIf="indexing">Analyzer</a>
+  <a href="./accounts/logout" class="btn btn-primary header-btn">Logout</a>
+</div>
+<div *ngIf="indexing">
+  <app-gwt-indexing></app-gwt-indexing>
+</div>
+<div *ngIf="!indexing">
+  <app-header-url></app-header-url>
+  <app-content-table></app-content-table>
+  <app-gwt-table></app-gwt-table>
+  <app-phrase-analysis></app-phrase-analysis>
+</div>
 
 <div *ngIf="HTTPActivity" class="loader-container">
-	<div class="top-left"></div>
-	<div class="top-right"></div>
-	<div class="bottom-left"></div>
-	<div class="bottom-right"></div>
+  <div class="top-left"></div>
+  <div class="top-right"></div>
+  <div class="bottom-left"></div>
+  <div class="bottom-right"></div>
 </div>
 <div *ngIf="HTTPActivity" class="modal-backdrop"></div>

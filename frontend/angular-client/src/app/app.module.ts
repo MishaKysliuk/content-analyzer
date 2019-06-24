@@ -29,6 +29,7 @@ import {ContentService} from './content.service';
 import { PhraseAnalysisComponent } from './phrase-analysis/phrase-analysis.component';
 import { AnalysisTableComponent } from './phrase-analysis/analysis-table/analysis-table.component';
 import { DialogComponent } from './header-url/dialog/dialog.component';
+import { GwtIndexingComponent } from './gwt-indexing/gwt-indexing.component';
 
 @NgModule({
   declarations: [
@@ -38,7 +39,8 @@ import { DialogComponent } from './header-url/dialog/dialog.component';
     GwtTableComponent,
     PhraseAnalysisComponent,
     AnalysisTableComponent,
-    DialogComponent
+    DialogComponent,
+    GwtIndexingComponent
   ],
   imports: [
     BrowserModule,

@@ -5,3 +5,7 @@ from django.shortcuts import render
 @login_required
 def index(request):
     return render(request, 'index.html')
+
+@login_required
+def indexing_page(request):
+    return render(request, 'indexing.html')
