@@ -6,6 +6,7 @@ from django.utils.six import wraps
 from django.views.decorators.http import require_http_methods
 
 from content_analyzer.gwt_request_builder import build_request
+from content_analyzer.indexing_api import IndexingService
 from content_analyzer.intext_counter import fill_keywords_count, InTextCounterService, count_words
 from content_analyzer.models import SavedPage, ContentUnit, TargetKeyword, IgnoredKeyword, Project
 from content_analyzer.phrase_counter import PhraseCounterService, form_same_count_keywords
@@ -256,3 +257,16 @@ def delete_saved_page(request):
     except Exception as e:
         return JsonResponse({'message': '%s: %s' % ('Could not delete saved page', str(e))}, status=500)
     return HttpResponse('')
+
+
+@backend_login_required
+@require_http_methods(["POST"])
+def index_pages(request):
+    body = json.loads(request.body.decode(request.POST.encoding))
+    links = body.get('links')
+    indexing_service = IndexingService()
+    try:
+        response = indexing_service.execute_request(links)
+    except Exception as e:
+        return JsonResponse({'message': 'Error during indexing occured: %s' % str(e)}, status=500)
+    return JsonResponse(response, safe=False)

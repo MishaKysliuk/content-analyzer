@@ -29,5 +29,6 @@ urlpatterns = [
     path('api/retrieve_saved_content', views.retrieve_content_by_page),
     path('api/retrieve_saved_keywords', views.retrieve_keywords_by_page),
     path('api/delete_saved_page', views.delete_saved_page),
+    path('api/index_pages', views.index_pages),
     path('', include('frontend.urls')),
 ]

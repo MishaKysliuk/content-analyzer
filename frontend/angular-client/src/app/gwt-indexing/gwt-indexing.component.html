@@ -6,14 +6,23 @@
     <p></p>
   </div>
   <div class="row" *ngFor="let link of links; let i = index;">
-    <input type="text" [(ngModel)]="link">
+    <input class="link-input" type="text" [(ngModel)]="link.url">
     <div class="edit-buttons">
       <button (click)="deleteLink(i)"><i class="icon-cancel"></i></button>
+    </div>
+    <div class="response-status">
+      <h3 [ngStyle]="{'color': link.status === 'ERROR' ? 'red' : 'green'}">{{link.status}}</h3>
+    </div>
+    <div *ngIf="link.status === 'ERROR'" class="row response-exception">
+      <p style="color: red">{{link.message}}</p>
     </div>
   </div>
 
   <div class="row align-right">
     <button class="add-button" (click)="addLink()"><i class="icon-plus-circled"></i></button>
+  </div>
+  <div class="row align-right">
+    <button type="button" class="btn btn-primary header-btn" (click)="indexUrls()">Index</button>
   </div>
 
 </div>
