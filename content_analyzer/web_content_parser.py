@@ -17,14 +17,15 @@ class WebPageParser:
     #Sites do not allow to retrieve html content without this header
     user_agent_header = {'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/72.0.3626.121 Safari/537.36'}
 
-    skipped_tags = ['script', 'style', 'noscript', 'iframe', 'ym-measure', 'header', 'nav', 'footer']
+    skipped_tags = ['script', 'style', 'noscript', 'iframe', 'ym-measure', 'nav', 'footer', 'img', 'table', 'button']
 
     def __init__(self, url):
         self.url = url
         self.result = []
 
     def parse_web_page_text(self):
-        body = self.retrieve_body_tag()
+        title, body = self.retrieve_title_and_body()
+        self.result.append(TextData(title.get_text().strip(), title.name))
         for element in body.contents:
             self.parse_element_content(element)
         return self.result
@@ -44,9 +45,9 @@ class WebPageParser:
                 return True
         return False
 
-    def retrieve_body_tag(self):
+    def retrieve_title_and_body(self):
         soup = BeautifulSoup(self.retrieve_page_html(), 'html.parser')
-        return soup.find('body')
+        return soup.find('title'), soup.find('body')
 
     def retrieve_page_html(self):
         response = requests.get(self.url, headers = WebPageParser.user_agent_header)
