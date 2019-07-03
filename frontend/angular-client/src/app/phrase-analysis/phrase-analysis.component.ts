@@ -1,4 +1,4 @@
-import {Component, OnDestroy, OnInit, AfterViewInit, Inject, Injector, NgZone} from '@angular/core';
+import {Component, OnDestroy, OnInit, Inject, Injector, NgZone} from '@angular/core';
 import {PhraseUnit} from './analysis-table/phraseUnit';
 import {ContentService} from '../content.service';
 import {ContentUnit} from '../content-table/contentUnit';
@@ -14,7 +14,7 @@ declare const gapi: any;
   templateUrl: './phrase-analysis.component.html',
   styleUrls: ['./phrase-analysis.component.css']
 })
-export class PhraseAnalysisComponent implements OnInit, OnDestroy, AfterViewInit {
+export class PhraseAnalysisComponent implements OnInit, OnDestroy {
 
   selectedDivider: number;
   dividers: number[];
@@ -44,16 +44,14 @@ export class PhraseAnalysisComponent implements OnInit, OnDestroy, AfterViewInit
     this.contentService.isTargetKeywordsPresent.subscribe( (isTargetKeywordPresent: boolean) => {
       this.isAnalyzerFetchEnabled = isTargetKeywordPresent;
     });
+    (<any>window).initGapiClient = this.initGapiClient.bind(this);
   }
 
   ngOnDestroy(): void {
     this.contentService.keywords.unsubscribe();
     this.contentService.content.unsubscribe();
     this.contentService.isTargetKeywordsPresent.unsubscribe();
-  }
-
-  ngAfterViewInit() {
-    setTimeout(() => this.initClient(), 5000);
+    (<any>window).initGapiClient = null;
   }
 
   fetchAnalyzedData() {
@@ -83,20 +81,20 @@ export class PhraseAnalysisComponent implements OnInit, OnDestroy, AfterViewInit
       );
   }
 
-  initClient() {
-     gapi.client.init({
-       clientId: '806809737555-ilqho4qgcl6gterthfv78lt8h4vau4qk.apps.googleusercontent.com',
-       scope: 'https://www.googleapis.com/auth/drive.file',
-       discoveryDocs: ["https://sheets.googleapis.com/$discovery/rest?version=v4"]
-     }).then(() => {
-       gapi.auth2.getAuthInstance().isSignedIn.listen((isSignedIn) => this.updateSigninStatus(isSignedIn));
-       this.updateSigninStatus(gapi.auth2.getAuthInstance().isSignedIn.get());
-       this.zone.run(() => {
-         this.isGapiInited = true;
-       });
-     }, error => {
-       this.toastrService.error('Could not init Google Spreadsheets. Please reload page.');
-     });
+  initGapiClient() {
+    gapi.client.init({
+      clientId: '806809737555-ilqho4qgcl6gterthfv78lt8h4vau4qk.apps.googleusercontent.com',
+      scope: 'https://www.googleapis.com/auth/drive.file',
+      discoveryDocs: ["https://sheets.googleapis.com/$discovery/rest?version=v4"]
+    }).then(() => {
+      gapi.auth2.getAuthInstance().isSignedIn.listen((isSignedIn) => this.updateSigninStatus(isSignedIn));
+      this.updateSigninStatus(gapi.auth2.getAuthInstance().isSignedIn.get());
+      this.zone.run(() => this.isGapiInited = true);
+    }, error => {
+      this.zone.run(() =>
+        this.toastrService.error('Could not init Google Spreadsheets. Please reload page. Remember to use *.xip.io hostname.')
+      );
+    });
   }
 
   updateSigninStatus(isSignedIn) {
@@ -181,9 +179,7 @@ export class PhraseAnalysisComponent implements OnInit, OnDestroy, AfterViewInit
 
 
   handleSignoutClick() {
-    gapi.auth2.getAuthInstance().signOut(() => {
-      this.toastrService.success('Logged out from Google API successfully!');
-    });
+    gapi.auth2.getAuthInstance().signOut().then(() => this.toastrService.success('Logged out from Google API successfully!'));
   }
 
   private get toastrService(): ToastrService {
