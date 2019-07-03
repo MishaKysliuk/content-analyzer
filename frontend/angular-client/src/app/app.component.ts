@@ -18,7 +18,6 @@ export class AppComponent implements OnInit, OnDestroy{
   }
 
   public setPageToIndexing(isIndexing) {
-    console.log(isIndexing);
     this.zone.run(() => this.indexing = isIndexing);
   }
 

@@ -61,9 +61,12 @@ export class HeaderUrlComponent implements OnInit, OnDestroy {
     return savedUrl ? typeof savedUrl === 'string' ? savedUrl : savedUrl.url : undefined;
   }
 
-  processUrl() {
+  processUrl(force?: boolean) {
     this.addUrlTrailingSlash();
-    this.urlService.urlToRetrieveContent.next(this.url);
+    if (force)
+      this.urlService.urlToRetrieveContent.next((this.url as SavedUrl).url);
+    else
+      this.urlService.urlToRetrieveContent.next(this.url);
   }
 
   saveUrl() {

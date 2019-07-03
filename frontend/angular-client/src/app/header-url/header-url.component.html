@@ -18,7 +18,17 @@
       </mat-form-field>
     </div>
     <div class="buttons-container">
-      <button type="button" class="btn btn-primary header-btn" (click)="processUrl()">Go</button>
+      <div class="btn-group header-btn" *ngIf="isUrlPageExists()">
+        <button type="button" class="btn btn-primary" (click)="processUrl()">Retrieve</button>
+        <button type="button" class="btn btn-primary dropdown-toggle dropdown-toggle-split" data-toggle="dropdown"
+                aria-haspopup="true" aria-expanded="false">
+          <span class="sr-only">Toggle Dropdown</span>
+        </button>
+        <div class="dropdown-menu dropdown-menu-right">
+          <a class="dropdown-item" (click)="processUrl(true)" href="#">Force parse</a>
+        </div>
+      </div>
+      <button *ngIf="!isUrlPageExists()" type="button" class="btn btn-primary header-btn" (click)="processUrl()">Retrieve</button>
       <button type="button" class="btn btn-primary header-btn" (click)="saveUrl()">Save</button>
       <button type="button" [disabled]="!isUrlPageExists()" class="btn btn-primary header-btn"
               (click)="openDeleteDialog()">Delete
