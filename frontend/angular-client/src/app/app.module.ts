@@ -30,6 +30,7 @@ import { PhraseAnalysisComponent } from './phrase-analysis/phrase-analysis.compo
 import { AnalysisTableComponent } from './phrase-analysis/analysis-table/analysis-table.component';
 import { DialogComponent } from './header-url/dialog/dialog.component';
 import { GwtIndexingComponent } from './gwt-indexing/gwt-indexing.component';
+import { LinksCheckerComponent } from './links-checker/links-checker.component';
 
 @NgModule({
   declarations: [
@@ -40,7 +41,8 @@ import { GwtIndexingComponent } from './gwt-indexing/gwt-indexing.component';
     PhraseAnalysisComponent,
     AnalysisTableComponent,
     DialogComponent,
-    GwtIndexingComponent
+    GwtIndexingComponent,
+    LinksCheckerComponent
   ],
   imports: [
     BrowserModule,

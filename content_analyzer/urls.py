@@ -30,5 +30,7 @@ urlpatterns = [
     path('api/retrieve_saved_keywords', views.retrieve_keywords_by_page),
     path('api/delete_saved_page', views.delete_saved_page),
     path('api/index_pages', views.index_pages),
+    path('api/check_links', views.check_links),
+    path('api/oauth2callback', views.oauth2callback, name='oauth2callback'),
     path('', include('frontend.urls')),
 ]

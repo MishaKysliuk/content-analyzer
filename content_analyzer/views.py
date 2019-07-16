@@ -1,17 +1,25 @@
 import json
 
 from django.http import JsonResponse, HttpResponse, HttpResponseForbidden
+from django.urls import reverse
 from django.utils.decorators import available_attrs
 from django.utils.six import wraps
 from django.views.decorators.http import require_http_methods
+from google.oauth2.credentials import Credentials
 
 from content_analyzer.gwt_request_builder import build_request
 from content_analyzer.indexing_api import IndexingService
 from content_analyzer.intext_counter import fill_keywords_count, InTextCounterService, count_words
+from content_analyzer.links_checker import LinksChecker
 from content_analyzer.models import SavedPage, ContentUnit, TargetKeyword, IgnoredKeyword, Project
 from content_analyzer.phrase_counter import PhraseCounterService, form_same_count_keywords
 from content_analyzer.web_content_parser import WebPageParser
 from content_analyzer.webmaster_api import WebmasterService
+from apiclient import discovery
+import google_auth_oauthlib.flow
+
+CLIENT_SECRET_FILE = 'client_secret.json'
+SCOPES = ['https://www.googleapis.com/auth/spreadsheets']
 
 
 def backend_login_required(function=None):
@@ -270,3 +278,54 @@ def index_pages(request):
     except Exception as e:
         return JsonResponse({'message': 'Error during indexing occured: %s' % str(e)}, status=500)
     return JsonResponse(response, safe=False)
+
+
+@backend_login_required
+@require_http_methods(["POST"])
+def check_links(request):
+    try:
+        if 'oauth2_credentials' in request.session:
+            sheet_id = json.loads(request.body.decode(request.POST.encoding)).get('sheetId')
+
+            links_checker = LinksChecker(request.session['oauth2_credentials'], sheet_id)
+            links_checker.check_links()
+            return JsonResponse({})
+        else:
+            flow = google_auth_oauthlib.flow.Flow.from_client_secrets_file(
+                CLIENT_SECRET_FILE, scopes=SCOPES)
+            flow.redirect_uri = request.build_absolute_uri(reverse('oauth2callback'))
+            authorization_url, _ = flow.authorization_url(include_granted_scopes='true')
+            response = {
+                'requiresAuth': True,
+                'authLink': authorization_url
+            }
+            return JsonResponse(response)
+    except Exception as e:
+        return JsonResponse({'message': 'Error during check links: %s' % str(e)}, status=500)
+
+
+@backend_login_required
+def oauth2callback(request):
+    try:
+        flow = google_auth_oauthlib.flow.Flow.from_client_secrets_file(
+            CLIENT_SECRET_FILE, scopes=SCOPES)
+        flow.redirect_uri = request.build_absolute_uri(reverse('oauth2callback'))
+        authorization_response = request.build_absolute_uri()
+        flow.fetch_token(authorization_response=authorization_response)
+
+        request.session['oauth2_credentials'] = credentials_to_dict(flow.credentials)
+    except Exception as e:
+        return JsonResponse({'message': 'Error during Google callback: %s' % str(e)}, status=500)
+
+    return HttpResponse('<script type="text/javascript">window.opener.checkLinks(); window.close();</script>')
+
+
+def credentials_to_dict(credentials):
+    return {
+        'token': credentials.token,
+        'refresh_token': credentials.refresh_token,
+        'token_uri': credentials.token_uri,
+        'client_id': credentials.client_id,
+        'client_secret': credentials.client_secret,
+        'scopes': credentials.scopes
+    }

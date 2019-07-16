@@ -84,7 +84,7 @@ export class PhraseAnalysisComponent implements OnInit, OnDestroy {
   initGapiClient() {
     gapi.client.init({
       clientId: '806809737555-ilqho4qgcl6gterthfv78lt8h4vau4qk.apps.googleusercontent.com',
-      scope: 'https://www.googleapis.com/auth/drive.file',
+      scope: 'https://www.googleapis.com/auth/spreadsheets',
       discoveryDocs: ["https://sheets.googleapis.com/$discovery/rest?version=v4"]
     }).then(() => {
       gapi.auth2.getAuthInstance().isSignedIn.listen((isSignedIn) => this.updateSigninStatus(isSignedIn));

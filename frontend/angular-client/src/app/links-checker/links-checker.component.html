@@ -1,0 +1,25 @@
+<div class="container">
+  <div class="card">
+    <div class="card-header" id="linkCheckHeading">
+      <h5>
+        Links Checker
+      </h5>
+      <button class="btn" data-toggle="collapse" data-target="#collapseLinkCheck" aria-expanded="true"
+              aria-controls="collapseLinkCheck">
+        <i class="icon-plus-circled"></i>
+      </button>
+    </div>
+
+    <div id="collapseLinkCheck" class="collapse show" aria-labelledby="linkCheckHeading">
+      <div class="input-container">
+        <mat-form-field class="id-input">
+          <mat-label>Google Sheet Id</mat-label>
+          <input type="text" placeholder="Sheet Id" aria-label="Sheet Id" matInput [(ngModel)]="sheetId">
+        </mat-form-field>
+        <button type="button" class="btn btn-primary header-btn" mat-raised-button
+              (click)="checkLinks()">Check Links
+      </button>
+      </div>
+    </div>
+  </div>
+</div>
