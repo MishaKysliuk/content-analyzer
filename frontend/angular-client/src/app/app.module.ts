@@ -22,7 +22,7 @@ import {
   MatDatepickerModule,
   MatSlideToggleModule,
   MatNativeDateModule,
-  MatButtonModule, MatAutocompleteModule, MatDialogModule
+  MatButtonModule, MatAutocompleteModule, MatDialogModule, MatCheckboxModule
 } from '@angular/material';
 import { GwtTableComponent } from './gwt-table/gwt-table.component';
 import {ContentService} from './content.service';
@@ -67,7 +67,8 @@ import { LinksCheckerComponent } from './links-checker/links-checker.component';
     MatButtonModule,
     ReactiveFormsModule,
     MatAutocompleteModule,
-    MatDialogModule
+    MatDialogModule,
+    MatCheckboxModule
   ],
   providers: [
     UrlService,

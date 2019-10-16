@@ -28,6 +28,7 @@ export class PhraseAnalysisComponent implements OnInit, OnDestroy {
   isAnalyzerFetchEnabled: boolean;
   isGapiSignedIn: boolean;
   isGapiInited: boolean;
+  exportCompetitors: boolean;
 
   private competitorsData: SecondTableUnit[];
   @ViewChild(MatSort) sort: MatSort;
@@ -188,6 +189,17 @@ export class PhraseAnalysisComponent implements OnInit, OnDestroy {
           values: values
         });
       }
+    }
+    if (this.exportCompetitors) {
+      const competitorsRange = ['J', 'N'];
+      let competitorsValues = [['Keyword', 'InTargetCount', 'InTextCount', 'Percent', 'Where']];
+      this.competitorsData.forEach((unit: SecondTableUnit) => competitorsValues.push([unit.keyword,
+        unit.inTargetCount.toString(), unit.inTextCount.toString(),
+        unit.percent.toFixed(2), unit.where]));
+      result.push({
+        range: `${competitorsRange[0]}1:${competitorsRange[1]}${competitorsValues.length}`,
+        values: competitorsValues
+      });
     }
     return result;
   }
