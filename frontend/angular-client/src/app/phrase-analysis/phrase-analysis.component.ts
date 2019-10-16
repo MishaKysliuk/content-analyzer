@@ -1,4 +1,4 @@
-import {Component, OnDestroy, OnInit, Inject, Injector, NgZone} from '@angular/core';
+import {Component, OnDestroy, OnInit, Inject, Injector, NgZone, ViewChild} from '@angular/core';
 import {PhraseUnit} from './analysis-table/phraseUnit';
 import {ContentService} from '../content.service';
 import {ContentUnit} from '../content-table/contentUnit';
@@ -6,6 +6,8 @@ import {KeywordUnit} from '../gwt-table/keywordUnit';
 import {HttpClient, HttpHeaders} from '@angular/common/http';
 import {ToastrService} from 'ngx-toastr';
 import {ServerResponse} from './serverResponse';
+import {SecondTableUnit} from './secondTableUnit';
+import {MatSort, MatTableDataSource} from '@angular/material';
 import {HttpHeader, HTTPStatus} from "../http.interceptor";
 declare const gapi: any;
 
@@ -27,8 +29,18 @@ export class PhraseAnalysisComponent implements OnInit, OnDestroy {
   isGapiSignedIn: boolean;
   isGapiInited: boolean;
 
+  private competitorsData: SecondTableUnit[];
+  @ViewChild(MatSort) sort: MatSort;
+
+  competDataSource: MatTableDataSource<SecondTableUnit>;
+  displayedColumns: string[] = ['keyword', 'inTargetCount', 'inTextCount', 'percent', 'where'];
+
   constructor(private http: HttpClient, private contentService: ContentService, 
-    @Inject(Injector) private readonly injector: Injector, private zone: NgZone) { }
+    @Inject(Injector) private readonly injector: Injector, private zone: NgZone) {
+
+    this.competDataSource = new MatTableDataSource<SecondTableUnit>(this.competitorsData);
+
+  }
 
   ngOnInit() {
     this.isGapiSignedIn = false;
@@ -45,6 +57,7 @@ export class PhraseAnalysisComponent implements OnInit, OnDestroy {
       this.isAnalyzerFetchEnabled = isTargetKeywordPresent;
     });
     (<any>window).initGapiClient = this.initGapiClient.bind(this);
+    this.competDataSource.sort = this.sort;
   }
 
   ngOnDestroy(): void {
@@ -76,6 +89,8 @@ export class PhraseAnalysisComponent implements OnInit, OnDestroy {
         res => {
           this.wordsCount = res.wordsCount;
           this.analyzedData = res.analyzedResult;
+          this.competitorsData = res.competitorsTable;
+          this.competDataSource.data = this.competitorsData;
           this.dividerArray = Array.from(Array(this.selectedDivider), (x, i) => i);
         }
       );

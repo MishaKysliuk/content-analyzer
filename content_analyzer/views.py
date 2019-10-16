@@ -87,7 +87,8 @@ def mark_keywords(keywords, page_id):
 def retrieve_phrases_analysis(request):
     result = {
         'wordsCount': 0,
-        'analyzedResult': []
+        'analyzedResult': [],
+        'competitorsTable': []
     }
     try:
         body = json.loads(request.body.decode(request.POST.encoding))
@@ -120,7 +121,20 @@ def retrieve_phrases_analysis(request):
 
             result['analyzedResult'].append(internal_result)
 
+        competitors_table = []
+        for keyword in keywords:
+            kw_in_text = in_text_counter_service.process_keyword(keyword['keyword'])
+            kw_in_target = phrase_counter_service.keyword_count(keyword['keyword'])
+            competitors_table.append({
+                'keyword': keyword['keyword'],
+                'inTextCount': kw_in_text[1],
+                'inTargetCount': kw_in_target,
+                'percent': (kw_in_text[1] / words_count) * 100,
+                'where': kw_in_text[0]
+            })
+
         result['wordsCount'] = words_count
+        result['competitorsTable'] = competitors_table
         in_text_counter_service.close_searcher()
         phrase_counter_service.close_searcher()
     except Exception as e:
