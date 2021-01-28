@@ -41,7 +41,7 @@ class LinksChecker:
         if response.status_code != 200:
             raise Exception(
                 'Could not retrieve "%s" page html. Status code is %s' % (source, response.status_code))
-        soup = BeautifulSoup(response.text, 'html.parser')
+        soup = BeautifulSoup(response.text, 'lxml')
         for a_tag in soup.find_all('a', href=True):
             if self.add_trailing_slash(a_tag['href']) == self.add_trailing_slash(link):
                 return True

@@ -38,7 +38,7 @@ class InTextCounterService:
 
     def process_keyword(self, keyword):
         query = self.parser.parse('"%s"' % keyword)
-        results = self.searcher.search(query)
+        results = self.searcher.search(query, limit=None, terms=True)
 
         inside_tags = []
         in_text_count = len(results)

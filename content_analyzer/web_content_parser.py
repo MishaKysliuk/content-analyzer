@@ -53,7 +53,7 @@ class WebPageParser:
         return False
 
     def retrieve_title_and_body(self):
-        soup = BeautifulSoup(self.retrieve_page_html(), 'html.parser')
+        soup = BeautifulSoup(self.retrieve_page_html(), 'lxml')
         return soup.find('title'), soup.find('body')
 
     def retrieve_page_html(self):
